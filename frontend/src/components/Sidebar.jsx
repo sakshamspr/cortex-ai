@@ -79,12 +79,7 @@ export default function Sidebar() {
   };
 
   const logout = async () => {
-    try {
-      await api.get("/api/auth/logout");
-      dispatch(setUserData(null));
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(setUserData(null));
   };
 
   useEffect(() => {
@@ -134,17 +129,17 @@ export default function Sidebar() {
 
   /* ── Collapsed rail — desktop only ── */
   const collapsedRail = (
-    <div className="hidden lg:flex flex-col items-center w-[56px] h-screen bg-[#0d0f14] border-r border-white/[0.06] py-4 gap-1 shrink-0">
+    <div className="hidden lg:flex flex-col items-center w-[56px] h-screen bg-[var(--paper-strong)] border-r border-[var(--line)] py-4 gap-1 shrink-0">
       <button
         onClick={() => setCollapsed(false)}
-        className="flex items-center justify-center w-9 h-9 rounded-xl text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer mb-1"
+        className="flex items-center justify-center w-9 h-9 rounded-xl text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[#f3e7dd] transition-colors duration-150 bg-transparent border-none cursor-pointer mb-1"
       >
         <PanelIcon />
       </button>
 
       <button
         onClick={handleCreateConversation}
-        className="flex items-center justify-center w-9 h-9 rounded-xl text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer"
+        className="flex items-center justify-center w-9 h-9 rounded-xl text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[#f3e7dd] transition-colors duration-150 bg-transparent border-none cursor-pointer"
       >
         <Plus size={17} />
       </button>
@@ -158,7 +153,7 @@ export default function Sidebar() {
               onClick={() => handleSelectConversation(chat)}
               title={chat.title}
               className={`flex items-center justify-center w-9 h-9 rounded-xl transition-colors duration-150 border-none cursor-pointer
-                ${isActive ? "bg-indigo-500/15 text-indigo-400" : "bg-transparent text-slate-500 hover:bg-white/[0.05] hover:text-slate-300"}`}
+                ${isActive ? "bg-[#f3ddd4] text-[var(--accent-dark)]" : "bg-transparent text-[var(--muted)] hover:bg-[#f3e7dd] hover:text-[var(--ink)]"}`}
             >
               <MessageSquare size={15} />
             </button>
@@ -173,14 +168,14 @@ export default function Sidebar() {
               <img
                 src={userData.avatar}
                 alt={userData.name}
-                className="w-8 h-8 rounded-[8px] object-cover border-2 border-indigo-500/25"
+                className="w-8 h-8 rounded-[8px] object-cover border-2 border-[#d59b8c]"
               />
             ) : (
-              <div className="w-8 h-8 rounded-[8px] bg-white/[0.06] flex items-center justify-center">
-                <User size={14} className="text-slate-400" />
+              <div className="w-8 h-8 rounded-[8px] bg-[#f3e7dd] flex items-center justify-center">
+                <User size={14} className="text-[var(--muted)]" />
               </div>
             )}
-            <span className="absolute -bottom-px -right-px w-2 h-2 bg-green-500 rounded-full border-[1.5px] border-[#0d0f14] block" />
+            <span className="absolute -bottom-px -right-px w-2 h-2 bg-[var(--sage)] rounded-full border-[1.5px] border-[var(--paper-strong)] block" />
           </div>
         )}
       </div>
@@ -191,11 +186,11 @@ export default function Sidebar() {
   const sidebarContent = (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center gap-2.5 px-4 py-4 border-b border-white/[0.06]">
+      <div className="flex items-center gap-2.5 px-4 py-4 border-b border-[var(--line)]">
         {/* Desktop collapse */}
         <button
           onClick={() => setCollapsed(true)}
-          className="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer"
+          className="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[#f3e7dd] transition-colors duration-150 bg-transparent border-none cursor-pointer"
         >
           <PanelIcon />
         </button>
@@ -203,22 +198,22 @@ export default function Sidebar() {
         {/* Mobile close */}
         <button
           onClick={() => setMobileOpen(false)}
-          className="lg:hidden flex items-center justify-center w-7 h-7 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer"
+          className="lg:hidden flex items-center justify-center w-7 h-7 rounded-lg text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[#f3e7dd] transition-colors duration-150 bg-transparent border-none cursor-pointer"
         >
           <X size={15} />
         </button>
 
-        <span className="text-[16px] font-semibold text-slate-100 tracking-tight flex-1">
-          CortexAI
+        <span className="text-[16px] font-semibold text-[var(--ink)] tracking-tight flex-1">
+          Cortex Research
         </span>
 
-        <span className="text-[10px] font-medium text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full tracking-wide">
+        <span className="text-[10px] font-medium text-[var(--accent-dark)] bg-[#f3ddd4] border border-[#e6b9aa] px-2 py-0.5 rounded-full tracking-wide">
           {userData?.plan ?? "pro"}
         </span>
 
         <button
           onClick={handleCreateConversation}
-          className="flex items-center justify-center w-7 h-7 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer"
+          className="flex items-center justify-center w-7 h-7 rounded-lg text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[#f3e7dd] transition-colors duration-150 bg-transparent border-none cursor-pointer"
         >
           <PenSquare size={14} />
         </button>
@@ -228,7 +223,7 @@ export default function Sidebar() {
       <div className="px-4 pt-4 pb-1">
         <button
           onClick={handleCreateConversation}
-          className="w-full flex items-center justify-center gap-2 text-sm font-medium text-white bg-gradient-to-br from-indigo-500 to-violet-700 rounded-xl py-[10px] border-none cursor-pointer hover:opacity-90 transition-opacity duration-150"
+          className="w-full flex items-center justify-center gap-2 text-sm font-medium text-white bg-[var(--accent)] rounded-xl py-[10px] border-none cursor-pointer hover:bg-[var(--accent-dark)] transition-colors duration-150"
         >
           <Plus size={15} />
           New Chat
@@ -236,11 +231,11 @@ export default function Sidebar() {
       </div>
 
       {conversations.length == 0 ? (
-        <div className="px-5 pt-4 pb-1.5 text-[10.5px] font-semibold uppercase tracking-widest text-slate-600">
+        <div className="px-5 pt-4 pb-1.5 text-[10.5px] font-semibold uppercase tracking-widest text-[var(--muted)]">
           No recent conversations
         </div>
       ) : (
-        <p className="px-5 pt-4 pb-1.5 text-[10.5px] font-semibold uppercase tracking-widest text-slate-600">
+        <p className="px-5 pt-4 pb-1.5 text-[10.5px] font-semibold uppercase tracking-widest text-[var(--muted)]">
           Recents
         </p>
       )}
@@ -262,16 +257,16 @@ export default function Sidebar() {
               className={`flex items-center justify-between gap-2.5 cursor-pointer mb-0.5 px-3 py-2.5 rounded-[10px] border transition-colors duration-150
                 ${
                   isActive
-                    ? "bg-indigo-500/10 border-indigo-500/[0.18]"
+                    ? "bg-[#f3ddd4] border-[#e6b9aa]"
                     : isHov
-                      ? "bg-white/[0.05] border-transparent"
+                      ? "bg-[#faf6ef] border-transparent"
                       : "bg-transparent border-transparent"
                 }`}
             >
               <div className="flex items-center gap-2.5 min-w-0 flex-1">
                 <div
                   className={`flex items-center justify-center shrink-0 w-[28px] h-[28px] rounded-lg transition-colors duration-150
-                  ${isActive ? "bg-indigo-500/15 text-indigo-400" : "bg-white/[0.05] text-slate-500"}`}
+                  ${isActive ? "bg-[#f3ddd4] text-[var(--accent-dark)]" : "bg-[#f5f0e8] text-[var(--muted)]"}`}
                 >
                   <MessageSquare size={13} />
                 </div>
@@ -286,12 +281,12 @@ export default function Sidebar() {
                       if (e.key === "Escape") setEditingId(null);
                     }}
                     onClick={(e) => e.stopPropagation()}
-                    className="bg-white/[0.06] border border-white/10 rounded px-1.5 py-0.5 text-[13px] text-white w-full outline-none focus:border-indigo-500"
+                    className="bg-[var(--paper-strong)] border border-[var(--line)] rounded px-1.5 py-0.5 text-[13px] text-[var(--ink)] w-full outline-none focus:border-[#d59b8c]"
                     autoFocus
                   />
                 ) : (
                   <p
-                    className={`text-[13px] font-medium truncate ${isActive ? "text-slate-100" : "text-slate-300"} flex-1`}
+                    className={`text-[13px] font-medium truncate ${isActive ? "text-[var(--ink)]" : "text-[#5f574f]"} flex-1`}
                   >
                     {chat.title}
                   </p>
@@ -305,14 +300,14 @@ export default function Sidebar() {
                       setEditingId(chat._id);
                       setEditTitleValue(chat.title);
                     }}
-                    className="flex items-center justify-center w-6 h-6 rounded-md text-slate-500 hover:text-indigo-400 hover:bg-indigo-500/10 transition-colors duration-150 bg-transparent border-none cursor-pointer"
+                    className="flex items-center justify-center w-6 h-6 rounded-md text-[var(--muted)] hover:text-[var(--accent-dark)] hover:bg-[#f3ddd4] transition-colors duration-150 bg-transparent border-none cursor-pointer"
                     title="Edit title"
                   >
                     <Edit3 size={12} />
                   </button>
                   <button
                     onClick={(e) => handleDeleteConversation(e, chat._id)}
-                    className="flex items-center justify-center w-6 h-6 rounded-md text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors duration-150 bg-transparent border-none cursor-pointer"
+                    className="flex items-center justify-center w-6 h-6 rounded-md text-[var(--muted)] hover:text-[var(--danger)] hover:bg-[#f4dfd8] transition-colors duration-150 bg-transparent border-none cursor-pointer"
                     title="Delete chat"
                   >
                     <Trash2 size={13} />
@@ -325,45 +320,45 @@ export default function Sidebar() {
       </div>
 
       {/* Divider */}
-      <div className="mx-2.5 h-px bg-white/[0.06]" />
+      <div className="mx-2.5 h-px bg-[var(--line)]" />
 
       {/* Footer */}
       <div className="px-3.5 py-3.5">
         {userData ? (
-          <div className="flex items-center gap-2.5 cursor-pointer rounded-xl px-3 py-2.5 hover:bg-white/[0.05] transition-colors duration-150">
+          <div className="flex items-center gap-2.5 cursor-pointer rounded-xl px-3 py-2.5 hover:bg-[#faf6ef] transition-colors duration-150">
             <div className="relative shrink-0">
               {!userData?.avatar || imageError ? (
-                <div className="w-9 h-9 rounded-[10px] bg-white/[0.06] flex items-center justify-center">
-                  <User size={15} className="text-slate-400" />
+                <div className="w-9 h-9 rounded-[10px] bg-[#f3e7dd] flex items-center justify-center">
+                  <User size={15} className="text-[var(--muted)]" />
                 </div>
               ) : (
                 <img
                   src={userData.avatar}
                   alt={userData.name}
-                  className="w-9 h-9 rounded-[10px] object-cover border-2 border-indigo-500/25"
+                  className="w-9 h-9 rounded-[10px] object-cover border-2 border-[#d59b8c]"
                   onError={() => setImageError(true)}
                 />
               )}
-              <span className="absolute -bottom-px -right-px w-[9px] h-[9px] bg-green-500 rounded-full border-2 border-[#0d0f14] block" />
+              <span className="absolute -bottom-px -right-px w-[9px] h-[9px] bg-[var(--sage)] rounded-full border-2 border-[var(--paper-strong)] block" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-semibold text-slate-100 truncate">
+              <p className="text-[13.5px] font-semibold text-[var(--ink)] truncate">
                 {userData.name}
               </p>
-              <p className="text-[11px] text-slate-600 mt-px">
+              <p className="text-[11px] text-[var(--muted)] mt-px">
                 {userData.plan || "Free Plan"}
               </p>
             </div>
             <div className="flex gap-1">
               <button
                 onClick={() => setShowBilling(true)}
-                className="flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-yellow-600 cursor-pointer hover:bg-white/[0.08] hover:text-slate-400 transition-all duration-150"
+                className="flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-[var(--accent)] cursor-pointer hover:bg-[#f3e7dd] hover:text-[var(--ink)] transition-all duration-150"
               >
                 <CoinsIcon size={16} />
               </button>
               <button
                 onClick={logout}
-                className="flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-slate-600 cursor-pointer hover:bg-white/[0.08] hover:text-slate-400 transition-all duration-150"
+                className="flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-[var(--muted)] cursor-pointer hover:bg-[#f3e7dd] hover:text-[var(--ink)] transition-all duration-150"
               >
                 <LogOut size={14} />
               </button>
@@ -387,7 +382,7 @@ export default function Sidebar() {
       {/* ── Mobile hamburger ── */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-3.5 left-4 z-50 flex items-center justify-center w-8 h-8 rounded-lg bg-[#0d0f14] border border-white/[0.06] text-slate-400 hover:text-slate-200 transition-colors duration-150 cursor-pointer"
+        className="lg:hidden fixed top-3.5 left-4 z-50 flex items-center justify-center w-8 h-8 rounded-lg bg-[var(--paper-strong)] border border-[var(--line)] text-[var(--muted)] hover:text-[var(--ink)] transition-colors duration-150 cursor-pointer"
       >
         <Menu size={16} />
       </button>
@@ -405,7 +400,7 @@ export default function Sidebar() {
         className={`
         fixed lg:static inset-y-0 left-0 z-50
         w-[270px] h-screen shrink-0
-        bg-[#0d0f14] border-r border-white/[0.06]
+        bg-[var(--paper-strong)] border-r border-[var(--line)]
         transition-transform duration-250
         ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
       `}

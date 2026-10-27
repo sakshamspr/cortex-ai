@@ -14,17 +14,17 @@ export default function Navbar() {
   );
   const { messages } = useSelector((state) => state.message);
   return (
-    <div className="h-14 flex items-center justify-between px-5 border-b border-white/[0.06] bg-[#0d0f14]">
+    <div className="h-16 flex items-center justify-between px-5 border-b border-[var(--line)] bg-[var(--paper-strong)]">
       {/* Left — chat title */}
       <div className="flex items-center gap-2.5">
-        <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
-          <MessageSquare size={13} className="text-indigo-400" />
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#f3ddd4] border border-[#e6b9aa]">
+        <MessageSquare size={14} className="text-[var(--accent-dark)]" />
         </div>
         <h2 className="text-[14px] font-semibold text-slate-100 tracking-tight">
-          {selectedConversation?.title}
+          {selectedConversation?.title || "Research Workspace"}
         </h2>
-        <span className="text-[10px] font-medium text-slate-600 bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded-full">
-          {messages.length} Messages
+        <span className="text-[10px] font-medium text-[var(--muted)] bg-[#f2ece3] border border-[var(--line)] px-2.5 py-1 rounded-full">
+          {messages.length ? `${messages.length} messages` : "Source-aware studio"}
         </span>
       </div>
 

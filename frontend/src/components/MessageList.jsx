@@ -11,7 +11,7 @@ function NeuralPulse() {
       {[0, 0.45, 0.9].map((delay, i) => (
         <motion.span
           key={i}
-          className="absolute inset-0 rounded-full border border-cyan-400/30"
+          className="absolute inset-0 rounded-full border border-[#d59b8c]/50"
           initial={{ scale: 0.3, opacity: 0.55 }}
           animate={{ scale: 1.7, opacity: 0 }}
           transition={{
@@ -23,8 +23,8 @@ function NeuralPulse() {
         />
       ))}
       <motion.span
-        className="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-cyan-300 to-violet-400"
-        style={{ boxShadow: "0 0 14px rgba(125,211,252,0.55)" }}
+        className="w-2.5 h-2.5 rounded-full bg-[var(--accent)]"
+        style={{ boxShadow: "0 0 14px rgba(196,95,69,0.32)" }}
         animate={{ scale: [1, 1.25, 1] }}
         transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
       />
@@ -62,7 +62,7 @@ function GeneratingIndicator() {
             {label.split("").map((ch, i) => (
               <motion.span
                 key={i}
-                className="text-[13px] font-medium tracking-wide text-slate-400"
+                className="text-[13px] font-medium tracking-wide text-[var(--muted)]"
                 animate={{ opacity: [0.3, 1, 0.3] }}
                 transition={{
                   duration: 1.4,
@@ -112,35 +112,39 @@ export default function MessageList() {
   }, [selectedConversation?._id]);
 
   return (
-    <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div className="flex-1 min-h-0 overflow-y-auto bg-[#f5f0e8] px-6 py-6 space-y-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {messages.length === 0 && !isLoading ? (
-        <div className="h-full flex flex-col items-center justify-center gap-4 text-center">
+        <div className="h-full flex flex-col items-center justify-center gap-5 text-center px-6">
+          <div className="w-full max-w-[620px] rounded-3xl border border-[var(--line)] bg-[var(--paper-strong)] px-7 py-9 shadow-[0_18px_50px_rgba(74,54,38,0.08)]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--accent-dark)]">
+            Cortex Research Studio
+          </p>
           <div className="flex flex-col gap-1.5">
-            <h1 className="text-[20px] font-semibold text-slate-200 tracking-tight">
-              CortexAI
-            </h1>
-            <h3 className="text-[15px] font-semibold text-slate-400 tracking-tight">
-              How can I help you?
-            </h3>
-            <p className="text-[13px] text-slate-600 max-w-[260px] leading-relaxed">
-              Ask me anything — code, ideas, explanations, or just a quick
-              question.
-            </p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-2 mt-1">
-            {[
-              "Write a Netflix clone",
-              "Explain Redis",
-              "Build a dashboard",
-            ].map((s) => (
-              <button
-                key={s}
-                className="text-[12px] text-slate-400 bg-white/[0.04] border border-white/[0.07] px-3.5 py-1.5 rounded-lg hover:bg-white/[0.08] hover:text-slate-200 transition-colors duration-150 cursor-pointer"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
+          <h1 className="research-display text-[34px] font-normal text-[var(--ink)] tracking-tight">
+            Turn sources into insight.
+          </h1>
+          <h3 className="text-[15px] font-medium text-[var(--muted)] tracking-tight">
+            Upload a chapter, explore the evidence, and shape it into something presentable.
+          </h3>
+          <p className="text-[13px] text-[var(--muted)] max-w-[470px] mx-auto leading-relaxed">
+            Build a research brief, presentation, questionnaire, or assignment from one focused workspace.
+          </p>
+        </div>
+        <div className="flex flex-wrap justify-center gap-2 mt-1 max-w-[620px]">
+          {[
+            "Summarize my uploaded chapter",
+            "Create a presentation outline",
+            "Generate a study questionnaire",
+          ].map((s) => (
+            <button
+              key={s}
+              className="text-[12px] text-[var(--muted)] bg-[var(--paper-strong)] border border-[var(--line)] px-3.5 py-2 rounded-full hover:border-[#d59b8c] hover:text-[var(--accent-dark)] transition-colors duration-150 cursor-pointer"
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+        </div>
         </div>
       ) : (
         <>
@@ -156,6 +160,7 @@ export default function MessageList() {
                 content={msg.content}
                 images={msg?.images || []}
                 files={msg?.files || []}
+                trace={msg?.trace}
               />
             </motion.div>
           ))}

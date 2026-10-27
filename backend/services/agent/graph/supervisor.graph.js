@@ -15,6 +15,7 @@ import { pptAgent } from "../agents/ppt.agent.js";
 import { imageAgent } from "../agents/imageGen.agent.js";
 import { visionAgent } from "../agents/vision.agent.js";
 import { pdfRagAgent } from "../agents/pdfRag.agent.js";
+import { verifierNode } from "./verifier.node.js";
 
 // Initialize a state graph utilizing our custom agent state schema
 const workflow = new StateGraph(AgentState);
@@ -33,6 +34,7 @@ workflow.addNode("ppt", pptAgent);
 workflow.addNode("image", imageAgent);
 workflow.addNode("vision", visionAgent);
 workflow.addNode("pdf_rag", pdfRagAgent);
+workflow.addNode("verifier", verifierNode);
 
 // Point the starting edge to the router node
 workflow.addEdge("__start__", "router");
@@ -84,20 +86,21 @@ workflow.addConditionalEdges(
 );
 
 // End states for specialized creation/generation pipelines
-workflow.addEdge("coding", "__end__");
-workflow.addEdge("image", "__end__");
+workflow.addEdge("coding", "verifier");
+workflow.addEdge("image", "verifier");
 
 // Route web search results back to the chat agent to compose the final response
 workflow.addEdge("search", "chat");
 
-workflow.addEdge("pdf", "__end__");
-workflow.addEdge("ppt", "__end__");
+workflow.addEdge("pdf", "verifier");
+workflow.addEdge("ppt", "verifier");
 
-workflow.addEdge("chat", "__end__");
+workflow.addEdge("chat", "verifier");
 
-workflow.addEdge("vision", "__end__");
+workflow.addEdge("vision", "verifier");
 
-workflow.addEdge("pdf_rag", "__end__");
+workflow.addEdge("pdf_rag", "verifier");
+workflow.addEdge("verifier", "__end__");
 
 // Compile the state graph workflow into an executable LangGraph instance
 export const graph = workflow.compile();

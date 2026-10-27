@@ -101,6 +101,29 @@ export default function ChatInput({ setBanner }) {
     },
   ];
 
+  const researchActions = [
+    {
+      label: "Research brief",
+      prompt: "Create a concise research brief from the uploaded source. Include the thesis, key concepts, evidence, open questions, and a short conclusion.",
+      agent: "chat",
+    },
+    {
+      label: "Presentation",
+      prompt: "Create a clear academic presentation from the uploaded source with a title, learning objectives, key ideas, evidence, and conclusion.",
+      agent: "ppt",
+    },
+    {
+      label: "Questionnaire",
+      prompt: "Generate a balanced study questionnaire from the uploaded source with factual, conceptual, and application questions followed by an answer key.",
+      agent: "chat",
+    },
+    {
+      label: "Assignment",
+      prompt: "Create a college-level assignment from the uploaded source with context, learning objectives, tasks, evaluation criteria, and extension questions.",
+      agent: "chat",
+    },
+  ];
+
   useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -216,6 +239,7 @@ export default function ChatInput({ setBanner }) {
           role: "assistant",
           content: data.answer,
           images: data.images,
+          trace: data.trace,
         }),
       );
 
@@ -238,8 +262,30 @@ export default function ChatInput({ setBanner }) {
   };
 
   return (
-    <div className="w-full overflow-hidden px-3 md:px-5 py-4 border-t border-white/[0.06] bg-[#0d0f14]">
-      <div className="flex flex-col gap-2 bg-white/[0.03] border border-white/[0.07] rounded-2xl px-4 pt-3.5 pb-3">
+    <div className="w-full overflow-hidden px-3 md:px-5 py-4 border-t border-[var(--line)] bg-[var(--paper)]">
+      <div className="flex flex-col gap-2 bg-[var(--paper-strong)] border border-[var(--line)] rounded-2xl px-4 pt-3.5 pb-3 shadow-[0_8px_24px_rgba(74,54,38,0.06)]">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+            Research actions
+          </p>
+          <span className="text-[10px] text-[var(--muted)]">
+            {selectedFile ? `Source attached: ${selectedFile.name}` : "Upload a PDF to ground the result"}
+          </span>
+        </div>
+        <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {researchActions.map((action) => (
+            <button
+              key={action.label}
+              onClick={() => {
+                setSelectedAgent(action.agent);
+                setValue(action.prompt);
+              }}
+              className="shrink-0 rounded-full border border-[var(--line)] bg-[#faf6ef] px-3 py-1.5 text-[11px] font-medium text-[var(--muted)] transition-colors hover:border-[#d59b8c] hover:text-[var(--accent-dark)]"
+            >
+              {action.label}
+            </button>
+          ))}
+        </div>
         <div className="flex w-[80%] gap-2 pr-2 flex-wrap">
           {agents.map((agent) => {
             const Icon = agent.icon;
@@ -265,8 +311,8 @@ export default function ChatInput({ setBanner }) {
 
             ${
               isActive
-                ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white border-transparent shadow-[0_1px_8px_rgba(99,102,241,.35)]"
-                : "bg-white/[0.03] text-slate-400 border-white/[0.06] hover:bg-white/[0.07]"
+                ? "bg-[var(--accent)] text-white border-transparent shadow-[0_1px_8px_rgba(196,95,69,.28)]"
+                : "bg-[#faf6ef] text-[var(--muted)] border-[var(--line)] hover:bg-[#f3e7dd]"
             }
           `}
               >
@@ -326,7 +372,7 @@ export default function ChatInput({ setBanner }) {
           placeholder={placeholders[selectedAgent]}
           rows={3}
           disabled={isLoading}
-          className="w-full bg-transparent outline-none resize-none text-[14px] text-slate-200 placeholder:text-slate-600 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50"
+          className="w-full bg-transparent outline-none resize-none text-[14px] text-[var(--ink)] placeholder:text-[#aaa096] leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50"
         />
 
         {/* Bottom row */}
@@ -347,7 +393,7 @@ export default function ChatInput({ setBanner }) {
               }}
             />
             <button
-              className="flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 hover:text-slate-400 hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all duration-150 bg-transparent cursor-pointer"
+              className="flex items-center justify-center w-8 h-8 rounded-lg text-[var(--muted)] hover:text-[var(--accent-dark)] hover:bg-[#f3e7dd] border border-transparent hover:border-[var(--line)] transition-all duration-150 bg-transparent cursor-pointer"
               onClick={() => fileRef.current.click()}
             >
               <Paperclip size={14} />
@@ -373,7 +419,7 @@ transition-all
 cursor-pointer
 
 ${
-  isListening ? "bg-red-500 text-white" : "text-slate-600 hover:bg-white/[0.05]"
+  isListening ? "bg-[var(--accent)] text-white" : "text-[var(--muted)] hover:bg-[#f3e7dd]"
 }
 
 `}
@@ -389,10 +435,10 @@ ${
             className={`flex items-center justify-center w-8 h-8 rounded-lg border-none cursor-pointer transition-all duration-150
               ${
                 isLoading
-                  ? "bg-white text-[#0d0f14] hover:bg-slate-200"
+                  ? "bg-[var(--ink)] text-white hover:bg-[#4a4038]"
                   : value.trim()
-                    ? "bg-gradient-to-br from-indigo-500 to-violet-700 hover:opacity-90 text-white"
-                    : "bg-white/[0.05] text-slate-600 cursor-not-allowed"
+                  ? "bg-[var(--accent)] hover:bg-[var(--accent-dark)] text-white"
+                  : "bg-[#eee7dc] text-[#aaa096] cursor-not-allowed"
               }`}
           >
             {isLoading ? (
@@ -404,7 +450,7 @@ ${
         </div>
       </div>
 
-      <p className="text-center text-[10.5px] text-slate-700 mt-2.5">
+      <p className="text-center text-[10.5px] text-[var(--muted)] mt-2.5">
         CortexAI can make mistakes. Verify important info.
       </p>
     </div>

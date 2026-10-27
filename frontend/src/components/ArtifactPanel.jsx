@@ -53,21 +53,21 @@ ${htmlFile?.content || ""}
 
   /* ── Shared code panel content ── */
   const PanelContent = ({ onClose }) => (
-    <div className="flex flex-col h-full bg-[#0d0f14]">
+    <div className="flex flex-col h-full bg-[var(--paper-strong)]">
       {/* Header */}
-      <div className="h-14 px-4 border-b border-white/[0.06] flex items-center gap-3 shrink-0">
+      <div className="h-14 px-4 border-b border-[var(--line)] flex items-center gap-3 shrink-0">
         <button
           onClick={onClose ?? (() => setCollapsed(true))}
-          className="flex items-center justify-center w-7 h-7 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer shrink-0"
+          className="flex items-center justify-center w-7 h-7 rounded-lg text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[#f3e7dd] transition-colors duration-150 bg-transparent border-none cursor-pointer shrink-0"
         >
           {onClose ? <X size={15} /> : <PanelRightClose size={15} />}
         </button>
 
         <div className="flex items-center gap-2 flex-1 min-w-0">
-          <div className="flex items-center justify-center w-6 h-6 rounded-md bg-indigo-500/10 border border-indigo-500/20 shrink-0">
-            <FiCode className="text-indigo-400" size={12} />
+          <div className="flex items-center justify-center w-6 h-6 rounded-md bg-[#f3ddd4] border border-[#e6b9aa] shrink-0">
+            <FiCode className="text-[var(--accent-dark)]" size={12} />
           </div>
-          <h2 className="text-[13px] font-medium text-slate-200 truncate">
+          <h2 className="text-[13px] font-medium text-[var(--ink)] truncate">
             {artifact.title}
           </h2>
         </div>
@@ -245,7 +245,7 @@ ${htmlFile?.content || ""}
             animate={{ width: 48, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ duration: 0.22, ease: "easeInOut" }}
-            className="hidden lg:flex h-full border-l border-white/[0.06] bg-[#0d0f14] flex-col items-center py-4 gap-3 shrink-0"
+            className="hidden lg:flex h-full border-l border-[var(--line)] bg-[var(--paper-strong)] flex-col items-center py-4 gap-3 shrink-0"
           >
             <button
               onClick={() => setCollapsed(false)}

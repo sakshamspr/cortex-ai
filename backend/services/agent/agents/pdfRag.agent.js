@@ -7,6 +7,7 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { getModel } from "../utils/model.js";
 import { QdrantVectorStore } from "@langchain/qdrant";
 export const pdfRagAgent = async (state) => {
+  let collectionName;
   try {
     const buffer = fs.readFileSync(state.file.path);
 
@@ -26,7 +27,7 @@ export const pdfRagAgent = async (state) => {
 
     const docs = await splitter.createDocuments([text]);
 
-    const collectionName = `pdf-${Date.now()}`;
+    collectionName = `pdf-${Date.now()}`;
 
     const vectorStore = await createVectorStore(
       collectionName,
@@ -87,6 +88,7 @@ ${state.prompt}
       docs,
 
       response: response.content,
+      pdfContext: context,
     };
   } finally {
     try {

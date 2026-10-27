@@ -7,8 +7,13 @@ export const proxyWithUser = (serviceUrl) => {
       if (srcReq.user) {
         proxyReqOpts.headers["x-user-id"] = srcReq.user.userId;
 
-        proxyReqOpts.headers["x-user-email"] = srcReq.user.email;
-        proxyReqOpts.headers["x-user-avatar"] = srcReq.user.avatar;
+        if (srcReq.user.email) {
+          proxyReqOpts.headers["x-user-email"] = srcReq.user.email;
+        }
+
+        if (srcReq.user.avatar) {
+          proxyReqOpts.headers["x-user-avatar"] = srcReq.user.avatar;
+        }
       }
 
       return proxyReqOpts;

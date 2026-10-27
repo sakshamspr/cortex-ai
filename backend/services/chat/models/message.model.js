@@ -44,6 +44,10 @@ const messageSchema = new mongoose.Schema(
     images: [String],
 
     artifacts: [artifactSchema],
+    trace: {
+      type: mongoose.Schema.Types.Mixed,
+      default: undefined,
+    },
   },
   {
     timestamps: true,

@@ -7,6 +7,7 @@ import { getMemory } from "../utils/memory.js";
 import { getModel } from "../utils/model.js";
 import { checkAgentLimit } from "../config/agentRateLimit.js";
 import { deductCredits } from "../utils/deductCredits.js";
+import { retrieveMemory } from "../r3/memory.js";
 
 export const chatAgent = async (state) => {
   await checkAgentLimit(state.userId, "chat");
@@ -20,6 +21,10 @@ export const chatAgent = async (state) => {
   const llm = getModel("chat");
 
   const history = await getMemory(state.conversationId);
+  const r3Memory = await retrieveMemory(state.conversationId);
+  const memoryContext = r3Memory.length
+    ? `\nVerified prior research notes:\n${r3Memory.map((item) => `- ${item.response}`).join("\n")}\n`
+    : "";
 
   const searchResultsText = typeof state.searchResults === "string"
     ? state.searchResults
@@ -43,6 +48,7 @@ Use the search results to provide a comprehensive, accurate, and up-to-date resp
 You are CortexAI, an intelligent AI assistant.
 
 ${searchContext}
+${memoryContext}
 
 
 

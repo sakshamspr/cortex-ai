@@ -73,34 +73,34 @@ export default function BillingDrawer({ open, onClose }) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.25 }}
-            className="fixed right-0 top-0 z-50 h-screen w-[380px] bg-[#0f1117] border-l border-white/10 shadow-2xl flex flex-col"
+            className="fixed right-0 top-0 z-50 h-screen w-[380px] bg-[var(--paper-strong)] border-l border-[var(--line)] shadow-[0_18px_50px_rgba(74,54,38,0.16)] flex flex-col"
           >
             {/* Header */}
 
-            <div className="flex items-center justify-between p-5 border-b border-white/10">
+            <div className="flex items-center justify-between p-5 border-b border-[var(--line)]">
               <div>
-                <h2 className="text-white text-lg font-semibold">Billing</h2>
+                <h2 className="text-[var(--ink)] text-lg font-semibold">Billing</h2>
 
-                <p className="text-slate-400 text-sm">Plans & Credits</p>
+                <p className="text-[var(--muted)] text-sm">Plans & Credits</p>
               </div>
 
               <button
                 onClick={onClose}
-                className="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center"
+                className="w-9 h-9 rounded-lg bg-[#f3e7dd] hover:bg-[#ead8cc] flex items-center justify-center"
               >
-                <X size={18} className="text-slate-300" />
+                <X size={18} className="text-[var(--muted)]" />
               </button>
             </div>
 
             {/* Current Plan */}
 
             <div className="p-5">
-              <div className="rounded-xl bg-white/[0.04] border border-white/10 p-4">
+              <div className="rounded-xl bg-[#faf6ef] border border-[var(--line)] p-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-slate-400 text-sm">Current Plan</p>
+                    <p className="text-[var(--muted)] text-sm">Current Plan</p>
 
-                    <h3 className="text-white text-xl font-bold">
+                    <h3 className="text-[var(--ink)] text-xl font-bold">
                       {userData?.plan ?? "Pro"}
                     </h3>
                   </div>
@@ -109,7 +109,7 @@ export default function BillingDrawer({ open, onClose }) {
                 </div>
 
                 <div className="mt-5">
-                  <div className="flex justify-between text-xs text-slate-400 mb-2">
+                  <div className="flex justify-between text-xs text-[var(--muted)] mb-2">
                     <span>Credits</span>
 
                     <span>
@@ -117,9 +117,9 @@ export default function BillingDrawer({ open, onClose }) {
                     </span>
                   </div>
 
-                  <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-2 rounded-full bg-[#eadfd3] overflow-hidden">
                     <div
-                      className="h-full bg-indigo-500 transition-all duration-500"
+                      className="h-full bg-[var(--accent)] transition-all duration-500"
                       style={{
                         width: `${
                           ((userData?.credits || 0) /
@@ -138,15 +138,15 @@ export default function BillingDrawer({ open, onClose }) {
             <div className="px-5 flex-1 overflow-auto space-y-4">
               {/* Starter */}
 
-              <div className="rounded-xl border border-white/10 p-4">
-                <h3 className="text-white font-semibold">Starter</h3>
+              <div className="rounded-xl border border-[var(--line)] p-4">
+                <h3 className="text-[var(--ink)] font-semibold">Starter</h3>
 
-                <p className="text-indigo-400 text-2xl font-bold mt-2">₹199</p>
+                <p className="text-[var(--accent-dark)] text-2xl font-bold mt-2">₹199</p>
 
-                <p className="text-slate-400 text-sm mt-1">500 Credits</p>
+                <p className="text-[var(--muted)] text-sm mt-1">500 Credits</p>
 
                 <button
-                  className="mt-4 w-full rounded-lg bg-indigo-600 hover:bg-indigo-700 py-2 text-white"
+                  className="mt-4 w-full rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-dark)] py-2 text-white"
                   onClick={() => handleUpgrade("starter")}
                 >
                   Upgrade
@@ -155,22 +155,22 @@ export default function BillingDrawer({ open, onClose }) {
 
               {/* Pro */}
 
-              <div className="rounded-xl border border-indigo-500 p-4 relative">
-                <span className="absolute right-3 top-3 text-xs bg-indigo-600 px-2 py-1 rounded-full text-white">
+              <div className="rounded-xl border border-[#d59b8c] p-4 relative">
+                <span className="absolute right-3 top-3 text-xs bg-[var(--accent)] px-2 py-1 rounded-full text-white">
                   Popular
                 </span>
 
-                <h3 className="text-white font-semibold flex items-center gap-2">
+                <h3 className="text-[var(--ink)] font-semibold flex items-center gap-2">
                   Pro
-                  <Zap size={16} className="text-yellow-400" />
+                  <Zap size={16} className="text-[var(--accent)]" />
                 </h3>
 
-                <p className="text-indigo-400 text-2xl font-bold mt-2">₹499</p>
+                <p className="text-[var(--accent-dark)] text-2xl font-bold mt-2">₹499</p>
 
-                <p className="text-slate-400 text-sm mt-1">1000 Credits</p>
+                <p className="text-[var(--muted)] text-sm mt-1">1000 Credits</p>
 
                 <button
-                  className="mt-4 w-full rounded-lg bg-indigo-600 hover:bg-indigo-700 py-2 text-white"
+                  className="mt-4 w-full rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-dark)] py-2 text-white"
                   onClick={() => handleUpgrade("pro")}
                 >
                   Upgrade
@@ -180,8 +180,8 @@ export default function BillingDrawer({ open, onClose }) {
 
             {/* Footer */}
 
-            <div className="p-5 border-t border-white/10">
-              <p className="text-xs text-slate-500">
+            <div className="p-5 border-t border-[var(--line)]">
+              <p className="text-xs text-[var(--muted)]">
                 Credits are used for Image, PDF, PPT and AI Generation.
               </p>
             </div>

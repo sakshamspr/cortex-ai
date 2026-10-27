@@ -6,7 +6,6 @@ import redis from "../shared/redis/redis.js";
 import dotenv from "dotenv";
 import proxy from "express-http-proxy";
 import { proxyWithUser } from "./utils/proxyWithHeaders.js";
-import { protect } from "./middlewares/auth.middleware.js";
 import { getCurrentUser } from "./controllers/user.controller.js";
 import cookieParser from "cookie-parser";
 dotenv.config();
@@ -25,14 +24,23 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(express.json());
 
-// Proxy public authentication requests to the Auth microservice
-app.use("/api/auth", proxy(process.env.AUTH_SERVICE));
+// Authentication is disabled for local use; provide one stable anonymous identity.
+app.use((req, res, next) => {
+  req.user = {
+    userId: "anonymous-local-user",
+    email: "local@cortex-ai.test",
+    name: "Local User",
+    plan: "free",
+    credits: 100,
+    totalCredits: 100,
+  };
+  next();
+});
 
-// Protected routes that verify user sessions and proxy headers to internal services
-app.use("/api/me", protect, getCurrentUser);
-app.use("/api/chat", protect, proxyWithUser(process.env.CHAT_SERVICE));
-app.use("/api/agent", protect, proxyWithUser(process.env.AGENT_SERVICE));
-app.use("/api/billing", protect, proxyWithUser(process.env.BILLING_SERVICE));
+app.use("/api/me", getCurrentUser);
+app.use("/api/chat", proxyWithUser(process.env.CHAT_SERVICE));
+app.use("/api/agent", proxyWithUser(process.env.AGENT_SERVICE));
+app.use("/api/billing", proxyWithUser(process.env.BILLING_SERVICE));
 
 app.get("/", (req, res) => {
   res.status(200).json({

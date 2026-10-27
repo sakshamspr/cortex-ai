@@ -8,7 +8,6 @@ const __dirname = path.dirname(__filename);
 const services = [
   ".", // Install root dependencies (ioredis, dotenv, etc.)
   "gateway",
-  "services/auth",
   "services/chat",
   "services/agent",
   "services/billing",

@@ -2,12 +2,19 @@
 
 CortexAI is a multi-agent AI platform built using a Node.js microservice architecture on the backend, and a modern React + Tailwind CSS single page application on the frontend. The platform orchestrates complex AI behaviors (such as automated routing, codebase generation, Tavily web searching, file parsing, and PPT/PDF compilation) powered by LangChain and LangGraph.
 
+## Handover documentation
+
+The complete technical handover is in [`docs/HANDOVER_INDEX.md`](docs/HANDOVER_INDEX.md).
+It links the system architecture, runtime operations, R3 implementation,
+frontend behavior, benchmark status, and security/release checklist.
+
 ---
 
 ## 🚀 Key Features
 
-- **Microservice Architecture**: Fully decoupled services for Authentication, Chat, Agents, and Billing coordinated by a secure API Gateway.
+- **Microservice Architecture**: Fully decoupled services for Chat, Agents, and Billing coordinated by an API Gateway.
 - **LangGraph Supervisor Routing**: Uses a supervisor router to direct user queries to specialized sub-agents based on context or file attachments.
+- **Cost-aware routing**: Common prompts are classified locally before invoking an agent, avoiding an extra LLM call just to select a route.
 - **Monaco Code Editor integration**: Features live side-by-side editing, syntax highlighting, and an iframe preview panel for generated code files.
 - **Multi-Agent Ecosystem**:
   - **Auto Agent**: Dynamically evaluates the request/attachment type to route to the correct agent.
@@ -45,7 +52,6 @@ CortexAI is designed as a decoupled, scalable microservices application.
 1.  **Frontend Layer**: A React 19 single page application styled with Tailwind CSS, utilizing Redux Toolkit for unified chat and user state.
 2.  **API Gateway**: A single entrance node that manages security/headers, parses user sessions from Redis, and proxies path requests (e.g. `/api/chat/*`) to downstream internal microservices.
 3.  **Microservices Layer**:
-    - **Auth Service**: Connects to Firebase Admin and handles database user creations.
     - **Chat Service**: Manages conversation history records and raw message saves.
     - **Agent Service**: Orchestrates the LangGraph execution flow, using Redis for rate-limiting and conversation memory, Qdrant for document RAG, S3 for storing compiled artifacts, and LLMs for generation.
     - **Billing Service**: Triggers Razorpay order creations and handles payment verification webhooks.
@@ -80,6 +86,44 @@ Dynamically designs downloadable `.pptx` slides based on custom slide prompts.
 Upgrades user subscription plans and increments usage credits.
 ![Razorpay Billing](screenshots/razorpay_billing.png)
 
+### Screenshot gallery
+
+These screenshots are included in the repository for documentation and
+presentation use:
+
+| Workflow | Preview |
+|---|---|
+| Coding and artifact preview | [Open screenshot](screenshots/coding_agent.png) |
+| Web research | [Open screenshot](screenshots/web_search_agent.png) |
+| PPT generation | [Open screenshot](screenshots/ppt_agent.png) |
+| Image generation | [Open screenshot](screenshots/image_agent.png) |
+| Billing interface | [Open screenshot](screenshots/razorpay_billing.png) |
+
+The screenshots show representative workflows. The current UI has since been
+refined into the warm Research Studio visual direction documented in
+`docs/HANDOVER_FRONTEND.md`.
+
+## Vercel deployment
+
+The React frontend is Vercel-compatible. Deploy it with the Vercel CLI from
+the repository root:
+
+```bash
+vercel login
+vercel --cwd frontend --prod
+```
+
+Set these Vercel project environment variables:
+
+```env
+VITE_SERVER_URL=https://YOUR-BACKEND-GATEWAY.example.com
+VITE_RAZORPAY_KEY=your_public_razorpay_key
+```
+
+Vercel hosts the frontend only. The Node microservices, MongoDB, Redis,
+Qdrant, and object storage must be hosted separately. Do not set
+`VITE_SERVER_URL` to `localhost` in a deployed project.
+
 ---
 
 ## ⚙️ Setup and Installation
@@ -90,7 +134,7 @@ Upgrades user subscription plans and increments usage credits.
 - MongoDB Instance
 - Redis server
 - AWS S3 Bucket
-- API keys for Firebase, Groq, Gemini, OpenRouter, Tavily, and Razorpay
+- API keys for Groq, Gemini, OpenRouter, Tavily, and Razorpay
 
 ### 1. Repository Setup & Dependencies Installation
 
@@ -100,7 +144,7 @@ First, install the package dependencies for the root and all microservices using
 # Navigate to the backend folder
 cd backend
 
-# Install dependencies for gateway and all services (auth, chat, agent, billing)
+# Install dependencies for gateway and all services (chat, agent, billing)
 npm run build
 ```
 
@@ -113,11 +157,9 @@ npm install
 
 ### 2. Configure Environment Variables
 
-Create a `.env` file in each respective directory based on the following configurations:
+Create a repository-root `.env` file for backend/runtime values. The backend launcher loads this shared file and passes the values to the gateway and microservices. Keep frontend values in `frontend/.env`, because Vite only exposes frontend-scoped variables to the browser.
 
-#### Backend Services `.env` Templates:
-
-##### `backend/gateway/.env`
+#### Repository-root `.env`
 
 ```env
 PORT=8000
@@ -127,28 +169,6 @@ CHAT_SERVICE=http://localhost:8002
 AGENT_SERVICE=http://localhost:8003
 BILLING_SERVICE=http://localhost:8004
 REDIS_URL=redis://localhost:6379
-```
-
-##### `backend/services/auth/.env`
-
-```env
-PORT=8001
-MONGODB_URL=your_mongodb_connection_string
-REDIS_URL=redis://localhost:6379
-FIREBASE_SERVICE_ACCOUNT=your_firebase_service_account_json_string
-```
-
-##### `backend/services/chat/.env`
-
-```env
-PORT=8002
-MONGODB_URL=your_mongodb_connection_string
-```
-
-##### `backend/services/agent/.env`
-
-```env
-PORT=8003
 MONGODB_URL=your_mongodb_connection_string
 GOOGLE_API_KEY=your_gemini_key
 GROQ_API_KEY=your_groq_key
@@ -161,27 +181,24 @@ AWS_BUCKET_NAME=your_s3_bucket
 QDRANT_URL=your_qdrant_db_url
 QDRANT_API_KEY=your_qdrant_api_key
 CHAT_SERVICE=http://localhost:8002
-AUTH_SERVICE=http://localhost:8001
-```
-
-##### `backend/services/billing/.env`
-
-```env
-PORT=8004
-MONGODB_URL=your_mongodb_connection_string
 RAZORPAY_KEY_ID=your_razorpay_key
 RAZORPAY_KEY_SECRET=your_razorpay_secret
-AUTH_SERVICE=http://localhost:8001
+
+# Optional LangSmith tracing
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_API_KEY=your_langchain_api_key
+LANGCHAIN_PROJECT=cortex-ai
+LANGCHAIN_ENDPOINT=https://eu.api.smith.langchain.com
 ```
 
-#### Frontend `.env` Templates:
-
-##### `frontend/.env`
+#### `frontend/.env`
 
 ```env
 VITE_SERVER_URL=http://localhost:8000
 VITE_RAZORPAY_KEY=your_razorpay_key
 ```
+
+Never commit either `.env` file or paste secrets into source control.
 
 ### 3. Launching Locally
 

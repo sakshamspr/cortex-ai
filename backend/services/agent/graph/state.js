@@ -22,4 +22,9 @@ export const AgentState = Annotation.Root({
   codeContext: Annotation(),
 
   pdfContext: Annotation(),
+  routing: Annotation(),
+  execution: Annotation(),
+  verification: Annotation(),
+  gate: Annotation(),
+  memory: Annotation(),
 });

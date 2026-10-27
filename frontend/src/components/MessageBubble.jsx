@@ -6,7 +6,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Copy, Check } from "lucide-react";
 
-function MessageBubble({ role, content, images, files = [] }) {
+function MessageBubble({ role, content, images, files = [], trace }) {
   const isUser = role === "user";
   const [lightboxSrc, setLightboxSrc] = useState(null);
   const [copiedCode, setCopiedCode] = useState("");
@@ -33,8 +33,8 @@ function MessageBubble({ role, content, images, files = [] }) {
   leading-relaxed
         ${
           isUser
-            ? "bg-gradient-to-br from-indigo-500 to-violet-700 text-white rounded-tr-sm"
-            : " text-slate-200 rounded-tl-sm"
+            ? "bg-[var(--accent)] text-white rounded-tr-sm"
+            : "bg-[var(--paper-strong)] border border-[var(--line)] text-[var(--ink)] rounded-tl-sm"
         }`}
       >
         {files && files.length > 0 && (
@@ -47,7 +47,7 @@ function MessageBubble({ role, content, images, files = [] }) {
                     key={idx}
                     src={file.url}
                     alt={file.name}
-                    className="w-24 h-16 rounded-lg object-cover border border-white/10"
+                    className="w-24 h-16 rounded-lg object-cover border border-[var(--line)]"
                   />
                 );
               } else {
@@ -57,9 +57,9 @@ function MessageBubble({ role, content, images, files = [] }) {
                     href={file.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-white/10 border border-white/10 text-xs text-slate-200 hover:bg-white/20 transition-colors"
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#f3e7dd] border border-[var(--line)] text-xs text-[var(--ink)] hover:bg-[#ead8cc] transition-colors"
                   >
-                    <FiFileText size={14} className="text-red-400 shrink-0" />
+                    <FiFileText size={14} className="text-[var(--accent-dark)] shrink-0" />
                     <span className="truncate max-w-[120px]">{file.name}</span>
                   </a>
                 );
@@ -80,6 +80,24 @@ function MessageBubble({ role, content, images, files = [] }) {
               />
             ))}
           </div>
+        )}
+        {!isUser && trace && (
+          <details className="mb-3 rounded-xl border border-[var(--line)] bg-[#f7efe7] px-3 py-2 text-xs text-[var(--muted)]">
+            <summary className="cursor-pointer font-semibold text-[var(--ink)]">
+              Research trace
+            </summary>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <span>Agent: {trace.routing?.chosen?.agent || "chat"}</span>
+              <span>Tier: {trace.routing?.chosen?.tier || "economy"}</span>
+              <span>Latency: {Math.round(trace.execution?.latencyMs || 0)} ms</span>
+              <span>Cost: ${(trace.execution?.costUsd || 0).toFixed(5)}</span>
+              {trace.verification && (
+                <span className="col-span-2">
+                  Verified confidence: {Math.round(trace.verification.faithfulness * 100)}%
+                </span>
+              )}
+            </div>
+          </details>
         )}
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
@@ -131,7 +149,7 @@ function MessageBubble({ role, content, images, files = [] }) {
                 href={href}
                 target="_blank"
                 rel="noreferrer"
-                className="text-indigo-400 underline inline-flex items-center gap-1"
+                className="text-[var(--accent-dark)] underline inline-flex items-center gap-1"
               >
                 {children}
                 <FiExternalLink size={11} />
@@ -161,7 +179,7 @@ function MessageBubble({ role, content, images, files = [] }) {
 
               if (!className) {
                 return (
-                  <code className="px-1.5 py-0.5 rounded bg-white/10 text-pink-400">
+                  <code className="px-1.5 py-0.5 rounded bg-[#f3e7dd] text-[var(--accent-dark)]">
                     {value}
                   </code>
                 );

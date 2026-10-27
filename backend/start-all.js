@@ -1,15 +1,17 @@
 import { spawn } from "child_process";
+import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+
 const gatewayPort = process.env.PORT || 8000;
 
 const services = [
   { name: "gateway", dir: "gateway", port: gatewayPort },
-  { name: "auth", dir: "services/auth", port: 8001 },
   { name: "chat", dir: "services/chat", port: 8002 },
   { name: "agent", dir: "services/agent", port: 8003 },
   { name: "billing", dir: "services/billing", port: 8004 },

@@ -40,7 +40,7 @@ import Message from "../models/message.model.js";
 // Saves a new chat message containing optional media/code artifacts
 export const saveMessage = async (req, res) => {
   try {
-    const { conversationId, role, content, images, artifacts } = req.body;
+    const { conversationId, role, content, images, artifacts, trace } = req.body;
 
     const message = await Message.create({
       conversationId,
@@ -49,6 +49,7 @@ export const saveMessage = async (req, res) => {
       images,
       content,
       artifacts: artifacts || [],
+      trace,
     });
 
     res.json(message);
