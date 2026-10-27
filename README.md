@@ -86,7 +86,18 @@ Dynamically designs downloadable `.pptx` slides based on custom slide prompts.
 Upgrades user subscription plans and increments usage credits.
 ![Razorpay Billing](screenshots/razorpay_billing.png)
 
-### Screenshot gallery
+### Fresh Research Studio screenshots
+
+Captured from the current local build on 27 October 2026:
+
+![Research Studio desktop](screenshots/fresh/research-studio-desktop.png)
+
+![Research Studio mobile](screenshots/fresh/research-studio-mobile.png)
+
+The refreshed screenshots show the current warm editorial interface, guided
+research actions, responsive layout, and document-to-output positioning.
+
+### Workflow screenshot gallery
 
 These screenshots are included in the repository for documentation and
 presentation use:
@@ -102,6 +113,27 @@ presentation use:
 The screenshots show representative workflows. The current UI has since been
 refined into the warm Research Studio visual direction documented in
 `docs/HANDOVER_FRONTEND.md`.
+
+## Current repository and deployment status
+
+- Source repository: [sakshamspr/cortex-ai](https://github.com/sakshamspr/cortex-ai)
+- Branch: `main`
+- Latest release commit: `47a0944`
+- Frontend build: passing
+- R3 tests: passing
+- Permanent Vercel deployment: requires Vercel authentication
+- Backend: must be hosted separately from Vercel
+
+The previously generated Vercel URL was an anonymous temporary preview and
+expires automatically. For a permanent deployment:
+
+```bash
+vercel login
+vercel --cwd frontend --prod
+```
+
+Then configure `VITE_SERVER_URL` in the Vercel project to point to a deployed
+gateway, not `localhost`.
 
 ## Vercel deployment
 

@@ -15,6 +15,7 @@ CortexAI implementation. Read the documents in this order:
    evaluation plan, and what must not be claimed.
 6. `HANDOVER_SECURITY.md` — credential handling, authentication decision,
    deployment risks, and a release checklist.
+7. `SCREENSHOTS.md` — current screenshot inventory and capture provenance.
 
 ## Current status
 
