@@ -1,255 +1,309 @@
-# CortexAI
+# CortexAI Research Studio
 
-CortexAI is a multi-agent AI platform built using a Node.js microservice architecture on the backend, and a modern React + Tailwind CSS single page application on the frontend. The platform orchestrates complex AI behaviors (such as automated routing, codebase generation, Tavily web searching, file parsing, and PPT/PDF compilation) powered by LangChain and LangGraph.
+**CortexAI** is a multi-agent research workspace for turning source material
+into grounded answers and presentable academic outputs.
 
-## Handover documentation
+> **Turn sources into insight.**
 
-The complete technical handover is in [`docs/HANDOVER_INDEX.md`](docs/HANDOVER_INDEX.md).
-It links the system architecture, runtime operations, R3 implementation,
-frontend behavior, benchmark status, and security/release checklist.
+Upload a chapter or PDF, explore its evidence, ask questions, search for
+supporting sources, and create research briefs, presentations, questionnaires,
+assignments, PDFs, and other artifacts from one workspace.
 
----
+## What is new
 
-## 🚀 Key Features
+### Research Studio interface
 
-- **Microservice Architecture**: Fully decoupled services for Chat, Agents, and Billing coordinated by an API Gateway.
-- **LangGraph Supervisor Routing**: Uses a supervisor router to direct user queries to specialized sub-agents based on context or file attachments.
-- **Cost-aware routing**: Common prompts are classified locally before invoking an agent, avoiding an extra LLM call just to select a route.
-- **Monaco Code Editor integration**: Features live side-by-side editing, syntax highlighting, and an iframe preview panel for generated code files.
-- **Multi-Agent Ecosystem**:
-  - **Auto Agent**: Dynamically evaluates the request/attachment type to route to the correct agent.
-  - **Chat Agent**: Normal chatbot conversation with message memory cached in Redis.
-  - **Coding Agent**: Generates production-ready react/html components with live preview.
-  - **PDF Agent**: Compiles professionally styled PDF documents using PDFKit and uploads them to AWS S3.
-  - **PPT Agent**: Instantly generates downloadable PowerPoint presentations using PPTXGenJS.
-  - **Image Agent**: Produces creative, high-fidelity images via Pollinations AI.
-  - **Web Search Agent**: Searches the live web using Tavily Search API.
-- **Razorpay Billing & Credits**: Multi-tier credit systems (Free, Starter, Pro plans) with usage cost deductions.
+- Warm editorial visual system with paper/ivory surfaces, charcoal typography,
+  terracotta accents, sage support tones, and responsive layouts.
+- Research-focused empty state instead of a generic blank chatbot.
+- Guided actions for research briefs, presentations, questionnaires, and
+  assignments.
+- Artifact panel for generated files and previews.
+- Responsive desktop and mobile layouts.
 
----
+### Cost-aware routing
 
-## 🛠️ Technology Stack
+Common prompts are classified locally before the specialist agent runs. This
+avoids spending an additional model call only to classify routine requests.
 
-| Layer                | Technologies                                                                               |
-| :------------------- | :----------------------------------------------------------------------------------------- |
-| **Frontend**         | React 19, Vite, Tailwind CSS v4, Redux Toolkit, Framer Motion, Monaco Editor, Lucide Icons |
-| **Gateway**          | Express, Helmet, Morgan, Cookie Parser, `express-http-proxy`                               |
-| **Microservices**    | Node.js, Express, Firebase Admin Core (Auth), Razorpay API (Billing)                       |
-| **Databases**        | MongoDB (Mongoose), Redis (Session Cache, Conversation Memory, Rate Limiter)               |
-| **Vector DB**        | Qdrant (for RAG / PDF parsing)                                                             |
-| **AI Orchestration** | LangChain, LangGraph                                                                       |
-| **Providers**        | Groq (Llama 3.3), Google Generative AI (Gemini 2.5), OpenRouter (DeepSeek), Tavily         |
-| **Storage**          | AWS S3 (for generated file hosting)                                                        |
+The router recognizes conversation, web search, coding, PPT, PDF, image,
+vision, and PDF-RAG workflows. Explicit agent selection and uploaded-file
+routing take priority.
 
----
+### R3 research loop
 
-## 📐 Architecture
+CortexAI now includes a feature-gated **Route, Reflect, Remember** layer:
 
-CortexAI is designed as a decoupled, scalable microservices application.
+1. **Route** selects an appropriate agent and model tier.
+2. **Reflect** evaluates answer claims against available evidence.
+3. **Remember** stores only turns that pass the verification threshold.
 
-### Layer Breakdown
+The same faithfulness score is reused as:
 
-1.  **Frontend Layer**: A React 19 single page application styled with Tailwind CSS, utilizing Redux Toolkit for unified chat and user state.
-2.  **API Gateway**: A single entrance node that manages security/headers, parses user sessions from Redis, and proxies path requests (e.g. `/api/chat/*`) to downstream internal microservices.
-3.  **Microservices Layer**:
-    - **Chat Service**: Manages conversation history records and raw message saves.
-    - **Agent Service**: Orchestrates the LangGraph execution flow, using Redis for rate-limiting and conversation memory, Qdrant for document RAG, S3 for storing compiled artifacts, and LLMs for generation.
-    - **Billing Service**: Triggers Razorpay order creations and handles payment verification webhooks.
-4.  **Data & Third-Party Layer**: Local data layers (MongoDB, Redis Cache) and external APIs (Firebase, Razorpay, Qdrant, AWS S3, Tavily, and LLM APIs).
+- the answer gate;
+- the routing reward;
+- the memory write filter.
 
----
+All R3 features default to off for backward compatibility.
 
-## 📸 Platform Showcases
+### Traceability and observability
 
-### Coding Agent with live Artifact Preview
+When enabled, each turn can record:
 
-Features full-page sandbox editing and instant render.
-![Coding Agent](screenshots/coding_agent.png)
+- selected agent and tier;
+- routing mode and policy version;
+- estimated input/output tokens;
+- estimated cost and latency;
+- claim-level verification;
+- faithfulness score;
+- accept/escalate/abstain decision;
+- memory retrieval and write status;
+- routing reward.
 
-### Web Search Agent (Tavily Integration)
+Assistant messages expose a collapsible **Research trace** panel with the most
+important metadata.
 
-Fetches live weather, real-time data, and timely responses.
-![Web Search Agent](screenshots/web_search_agent.png)
+### Document-to-output workflow
 
-### Creative Image Generation Agent
+The PDF-RAG workflow extracts and chunks uploaded documents, retrieves relevant
+passages with Qdrant, and generates a response constrained to the uploaded
+source. Existing generation agents can produce:
 
-Generates beautiful artwork and saves files directly to cloud storage.
-![Image Agent](screenshots/image_agent.png)
+- PowerPoint presentations;
+- PDF documents;
+- coding artifacts;
+- images;
+- research summaries and study material.
 
-### PPT Generation Agent
+## Product architecture
 
-Dynamically designs downloadable `.pptx` slides based on custom slide prompts.
-![PPT Agent](screenshots/ppt_agent.png)
+```text
+React + Vite Research Studio
+              │
+              ▼
+       Express API Gateway
+              │
+    ┌─────────┼─────────┬─────────┐
+    ▼         ▼         ▼         ▼
+  Chat      Agent     Billing   Redis
+ Service   Service    Service   Memory
+              │
+              ▼
+        LangGraph Supervisor
+              │
+ ┌────────────┼─────────────────────────────┐
+ ▼            ▼             ▼               ▼
+Chat       Coding        Search          PDF-RAG
+PPT        PDF           Image           Vision
+              │
+              ▼
+       MongoDB • Qdrant • S3
+```
 
-### Razorpay Billing Drawer
+### Services
 
-Upgrades user subscription plans and increments usage credits.
-![Razorpay Billing](screenshots/razorpay_billing.png)
+| Service | Port | Responsibility |
+|---|---:|---|
+| Gateway | 8000 | CORS, security middleware, anonymous local identity, proxying |
+| Chat | 8002 | Conversations and message persistence |
+| Agent | 8003 | Routing, model calls, RAG, verification, artifacts |
+| Billing | 8004 | Razorpay order and payment flows |
+| Frontend | 5173 | Vite development server |
 
-### Fresh Research Studio screenshots
+Authentication is intentionally disabled in the local demo runtime. The
+gateway supplies an anonymous local identity. This is not production
+authentication.
 
-Captured from the current local build on 27 October 2026:
+## Technology stack
+
+| Layer | Technologies |
+|---|---|
+| Frontend | React, Vite, Tailwind CSS, Redux Toolkit, Framer Motion |
+| Backend | Node.js, Express, microservices |
+| Orchestration | LangChain, LangGraph |
+| Data | MongoDB, Redis, Qdrant |
+| Models/providers | Groq, Google Gemini, OpenRouter, Tavily |
+| Artifacts | PDFKit, PPTXGenJS, S3-compatible storage |
+| Contracts | Zod runtime validation |
+
+## Repository structure
+
+```text
+frontend/                 React/Vite application
+backend/gateway/          API gateway
+backend/services/chat/    Conversation persistence
+backend/services/agent/   LangGraph agents and R3 runtime
+backend/services/billing/ Payment flows
+backend/shared/           Shared backend utilities
+docs/                     Architecture, handover, research documentation
+eval/                     Evaluation smoke harness
+screenshots/fresh/        Current UI screenshots
+```
+
+## Screenshots
+
+### Current Research Studio — desktop
 
 ![Research Studio desktop](screenshots/fresh/research-studio-desktop.png)
 
+### Current Research Studio — mobile
+
 ![Research Studio mobile](screenshots/fresh/research-studio-mobile.png)
 
-The refreshed screenshots show the current warm editorial interface, guided
-research actions, responsive layout, and document-to-output positioning.
+These screenshots were captured from the current local build and show the
+present visual direction without exposing private conversations, documents, or
+credentials. Capture details are documented in
+[`docs/SCREENSHOTS.md`](docs/SCREENSHOTS.md).
 
-### Workflow screenshot gallery
-
-These screenshots are included in the repository for documentation and
-presentation use:
-
-| Workflow | Preview |
-|---|---|
-| Coding and artifact preview | [Open screenshot](screenshots/coding_agent.png) |
-| Web research | [Open screenshot](screenshots/web_search_agent.png) |
-| PPT generation | [Open screenshot](screenshots/ppt_agent.png) |
-| Image generation | [Open screenshot](screenshots/image_agent.png) |
-| Billing interface | [Open screenshot](screenshots/razorpay_billing.png) |
-
-The screenshots show representative workflows. The current UI has since been
-refined into the warm Research Studio visual direction documented in
-`docs/HANDOVER_FRONTEND.md`.
-
-## Current repository and deployment status
-
-- Source repository: [sakshamspr/cortex-ai](https://github.com/sakshamspr/cortex-ai)
-- Branch: `main`
-- Latest release commit: `47a0944`
-- Frontend build: passing
-- R3 tests: passing
-- Permanent Vercel deployment: requires Vercel authentication
-- Backend: must be hosted separately from Vercel
-
-The previously generated Vercel URL was an anonymous temporary preview and
-expires automatically. For a permanent deployment:
-
-```bash
-vercel login
-vercel --cwd frontend --prod
-```
-
-Then configure `VITE_SERVER_URL` in the Vercel project to point to a deployed
-gateway, not `localhost`.
-
-## Vercel deployment
-
-The React frontend is Vercel-compatible. Deploy it with the Vercel CLI from
-the repository root:
-
-```bash
-vercel login
-vercel --cwd frontend --prod
-```
-
-Set these Vercel project environment variables:
-
-```env
-VITE_SERVER_URL=https://YOUR-BACKEND-GATEWAY.example.com
-VITE_RAZORPAY_KEY=your_public_razorpay_key
-```
-
-Vercel hosts the frontend only. The Node microservices, MongoDB, Redis,
-Qdrant, and object storage must be hosted separately. Do not set
-`VITE_SERVER_URL` to `localhost` in a deployed project.
-
----
-
-## ⚙️ Setup and Installation
+## Run locally
 
 ### Prerequisites
 
-- Node.js (v18+)
-- MongoDB Instance
-- Redis server
-- AWS S3 Bucket
-- API keys for Groq, Gemini, OpenRouter, Tavily, and Razorpay
+- Node.js 18+
+- MongoDB
+- Redis
+- Qdrant for PDF-RAG
+- Model-provider credentials
+- S3-compatible storage for generated artifacts
 
-### 1. Repository Setup & Dependencies Installation
-
-First, install the package dependencies for the root and all microservices using the installer script in the `backend` folder:
+### Install
 
 ```bash
-# Navigate to the backend folder
 cd backend
-
-# Install dependencies for gateway and all services (chat, agent, billing)
 npm run build
-```
 
-Then, install frontend dependencies:
-
-```bash
 cd ../frontend
 npm install
 ```
 
-### 2. Configure Environment Variables
+### Configure
 
-Create a repository-root `.env` file for backend/runtime values. The backend launcher loads this shared file and passes the values to the gateway and microservices. Keep frontend values in `frontend/.env`, because Vite only exposes frontend-scoped variables to the browser.
+Copy the templates:
 
-#### Repository-root `.env`
+```bash
+cp .env.example .env
+cp frontend/.env.example frontend/.env
+```
+
+Fill provider and database values locally. Never commit `.env` files.
+
+Backend values include:
 
 ```env
-PORT=8000
 FRONTEND_URL=http://localhost:5173
-AUTH_SERVICE=http://localhost:8001
 CHAT_SERVICE=http://localhost:8002
 AGENT_SERVICE=http://localhost:8003
 BILLING_SERVICE=http://localhost:8004
-REDIS_URL=redis://localhost:6379
-MONGODB_URL=your_mongodb_connection_string
-GOOGLE_API_KEY=your_gemini_key
-GROQ_API_KEY=your_groq_key
-TAVILY_API_KEY=your_tavily_key
-OPENROUTER_API_KEY=your_openrouter_key
-AWS_ACCESS_KEY_ID=your_aws_key
-AWS_SECRET_ACCESS_KEY=your_aws_secret
-AWS_REGION=your_aws_region
-AWS_BUCKET_NAME=your_s3_bucket
-QDRANT_URL=your_qdrant_db_url
-QDRANT_API_KEY=your_qdrant_api_key
-CHAT_SERVICE=http://localhost:8002
-RAZORPAY_KEY_ID=your_razorpay_key
-RAZORPAY_KEY_SECRET=your_razorpay_secret
-
-# Optional LangSmith tracing
-LANGCHAIN_TRACING_V2=true
-LANGCHAIN_API_KEY=your_langchain_api_key
-LANGCHAIN_PROJECT=cortex-ai
-LANGCHAIN_ENDPOINT=https://eu.api.smith.langchain.com
+REDIS_URL=...
+MONGODB_URL=...
+GOOGLE_API_KEY=...
+GROQ_API_KEY=...
+OPENROUTER_API_KEY=...
+TAVILY_API_KEY=...
+QDRANT_URL=...
+QDRANT_API_KEY=...
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+AWS_REGION=...
+AWS_BUCKET_NAME=...
 ```
 
-#### `frontend/.env`
+Frontend values:
 
 ```env
 VITE_SERVER_URL=http://localhost:8000
-VITE_RAZORPAY_KEY=your_razorpay_key
+VITE_RAZORPAY_KEY=...
 ```
 
-Never commit either `.env` file or paste secrets into source control.
+### Start
 
-### 3. Launching Locally
-
-#### Start the Backend Services
-
-To launch the API gateway and all backend microservices concurrently, execute:
+Terminal 1:
 
 ```bash
 cd backend
 npm start
 ```
 
-#### Start the Frontend Client
-
-To launch the React dashboard application, execute:
+Terminal 2:
 
 ```bash
 cd frontend
 npm run dev
 ```
 
-The application will run on `http://localhost:5173` and communicate through the Gateway running on `http://localhost:8000`.
+Open `http://localhost:5173`.
+
+## R3 configuration
+
+```env
+R3_ROUTER=off
+R3_VERIFIER=off
+R3_MEMORY=off
+```
+
+Recommended demonstration order:
+
+1. Start with all flags off.
+2. Use `R3_ROUTER=shadow` to observe policy decisions safely.
+3. Enable `R3_VERIFIER=on` to expose claim and gate metadata.
+4. Enable `R3_MEMORY=on` after confirming Redis connectivity.
+5. Use `R3_ROUTER=live` only after reviewing traces.
+
+Traces are written to `traces/turns.jsonl` and policy state to
+`traces/policy.json` when the corresponding features are used.
+
+## Validation
+
+```bash
+npm --prefix backend/services/agent run test:r3
+npm --prefix backend/services/agent run eval:r3
+npm --prefix frontend run build
+git diff --check
+```
+
+Current verified checks:
+
+- 5 R3 unit tests pass;
+- frontend production build passes;
+- supervisor graph compiles;
+- backend syntax checks pass;
+- zero-cost evaluation smoke harness passes.
+
+The repository does not yet contain a labelled benchmark dataset or real
+trace corpus. Routing accuracy, quality, latency, cost savings, and ablation
+results are therefore **TBD (run eval)** and must not be presented as
+measured results.
+
+## Deployment
+
+The frontend is compatible with Vercel:
+
+```bash
+vercel login
+vercel --cwd frontend --prod
+```
+
+Configure `VITE_SERVER_URL` in Vercel to a deployed backend gateway. Vercel
+hosts the frontend only; the Node services, MongoDB, Redis, Qdrant, and object
+storage must be hosted separately.
+
+The maintained source repository is
+[github.com/sakshamspr/cortex-ai](https://github.com/sakshamspr/cortex-ai).
+
+## Documentation
+
+- [`docs/HANDOVER_INDEX.md`](docs/HANDOVER_INDEX.md) — complete technical handover
+- [`docs/HANDOVER_SYSTEM.md`](docs/HANDOVER_SYSTEM.md) — architecture and services
+- [`docs/HANDOVER_RUNTIME.md`](docs/HANDOVER_RUNTIME.md) — setup and operations
+- [`docs/HANDOVER_R3.md`](docs/HANDOVER_R3.md) — R3 implementation
+- [`docs/HANDOVER_FRONTEND.md`](docs/HANDOVER_FRONTEND.md) — frontend behavior
+- [`docs/HANDOVER_EVALUATION.md`](docs/HANDOVER_EVALUATION.md) — benchmark status
+- [`docs/HANDOVER_SECURITY.md`](docs/HANDOVER_SECURITY.md) — security checklist
+- [`docs/SCREENSHOTS.md`](docs/SCREENSHOTS.md) — screenshot provenance
+
+## Security
+
+Never commit credentials, local environment files, private documents, or raw
+traces. Development credentials previously used for this project should be
+rotated before any public deployment. See
+[`docs/HANDOVER_SECURITY.md`](docs/HANDOVER_SECURITY.md).

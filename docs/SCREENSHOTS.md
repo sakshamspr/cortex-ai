@@ -15,19 +15,11 @@ show the empty workspace because it is the safest state for documentation and
 does not expose user conversations, uploaded documents, generated artifacts,
 or credentials.
 
-## Existing workflow captures
+## Screenshot policy
 
-The repository also contains representative screenshots under `screenshots/`:
-
-- `coding_agent.png`
-- `web_search_agent.png`
-- `ppt_agent.png`
-- `image_agent.png`
-- `razorpay_billing.png`
-
-Those older captures document individual workflows and may show the previous
-dark visual theme. The `screenshots/fresh/` files are the authoritative visual
-reference for the current Research Studio styling.
+Only the current Research Studio captures are kept in the repository. Previous
+dark-theme workflow screenshots were removed so the README and presentation
+materials have one consistent visual reference.
 
 ## Capture procedure
 
