@@ -20,11 +20,11 @@ export default function Navbar() {
         <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#f3ddd4] border border-[#e6b9aa]">
         <MessageSquare size={14} className="text-[var(--accent-dark)]" />
         </div>
-        <h2 className="text-[14px] font-semibold text-slate-100 tracking-tight">
+        <h2 className="text-[14px] font-semibold text-[var(--ink)] tracking-tight">
           {selectedConversation?.title || "Research Workspace"}
         </h2>
         <span className="text-[10px] font-medium text-[var(--muted)] bg-[#f2ece3] border border-[var(--line)] px-2.5 py-1 rounded-full">
-          {messages.length ? `${messages.length} messages` : "Source-aware studio"}
+          {messages.length ? `${messages.length} messages` : "B.Tech research project"}
         </span>
       </div>
 

@@ -6,7 +6,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Copy, Check } from "lucide-react";
 
-function MessageBubble({ role, content, images = [], files = [] }) {
+function MessageBubble({ role, content, images = [], files = [], trace }) {
   const isUser = role === "user";
   const [lightboxSrc, setLightboxSrc] = useState(null);
   const [copiedCode, setCopiedCode] = useState("");
@@ -80,6 +80,29 @@ function MessageBubble({ role, content, images = [], files = [] }) {
               />
             ))}
           </div>
+        )}
+        {!isUser && trace && (
+          <details className="mb-3 rounded-xl border border-[var(--line)] bg-[#f7efe7] px-3 py-2 text-xs text-[var(--muted)]">
+            <summary className="cursor-pointer font-semibold text-[var(--ink)]">
+              Evaluation details
+            </summary>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <span>Specialist: {trace.routing?.chosen?.agent || "conversation"}</span>
+              <span>Model tier: {trace.routing?.chosen?.tier || "baseline"}</span>
+              <span>Response time: {Math.round(trace.execution?.latencyMs || 0)} ms</span>
+              <span>Estimated usage: ${(trace.execution?.costUsd || 0).toFixed(5)}</span>
+              {trace.verification && (
+                <span className="col-span-2">
+                  Evidence confidence: {Math.round(trace.verification.faithfulness * 100)}%
+                </span>
+              )}
+              {trace.gate && (
+                <span className="col-span-2">
+                  Evidence decision: {trace.gate.decision}
+                </span>
+              )}
+            </div>
+          </details>
         )}
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}

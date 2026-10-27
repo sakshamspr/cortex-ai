@@ -1,10 +1,29 @@
-# CortexAI Research Studio
+# CortexAI — B.Tech Research Project
 
-CortexAI is a polished, source-aware workspace for learning, research, and
-creative production. It helps users move from a question or uploaded chapter
-to a clear answer, a structured study resource, or a finished presentation.
+CortexAI is a B.Tech research project investigating a closed-loop,
+cost-aware, evidence-sensitive multi-agent AI system. The application is also
+presented as a polished source-aware workspace: users can move from a question
+or uploaded chapter to a grounded answer, structured study resource, or
+finished presentation.
 
 > **Turn sources into insight.**
+
+## Research contribution
+
+The project studies the **Route, Reflect, Remember (R3)** loop:
+
+1. **Route** selects the most suitable specialist workflow and model tier.
+2. **Reflect** evaluates answer claims against retrieved evidence.
+3. **Remember** stores only information that passes the verification filter.
+
+The same faithfulness signal is intentionally reused for answer gating, routing
+reward, and memory writes. This creates a measurable closed loop instead of an
+open-ended supervisor that only generates responses.
+
+The system also instruments estimated token usage, model cost, latency,
+specialist selection, evidence confidence, gate decisions, and memory writes.
+Those fields support the cost-awareness and benchmark methodology without
+claiming results that have not yet been measured.
 
 ## What users can do
 
@@ -245,7 +264,7 @@ npm run dev
 
 Open `http://localhost:5173`.
 
-## Verification
+## Verification and benchmark status
 
 ```bash
 npm --prefix backend/services/agent run test:r3
@@ -254,8 +273,29 @@ git diff --check
 ```
 
 The current implementation has passing automated checks and a successful
-production frontend build. Additional technical evaluation material remains
-available in the private project handover under `docs/`.
+production frontend build:
+
+- 5 R3 unit tests pass;
+- supervisor graph compilation passes;
+- frontend production build passes;
+- backend syntax validation passes;
+- zero-cost evaluation smoke harness passes.
+
+The benchmark harness is designed to compare:
+
+- `always_strongest`;
+- `llm_router`;
+- `router_only`;
+- `verifier_only`;
+- `memory_only`;
+- `full_r3`.
+
+Planned metrics include routing accuracy, macro-F1, estimated cost per query,
+p95 latency, evidence faithfulness, answer relevance, context relevance,
+abstention rate, and memory recall. A labelled CortexBench/CortexRoute dataset
+and real trace corpus are not yet included, so quantitative benchmark results
+remain **TBD — run eval**. The project deliberately does not fabricate cost
+savings or quality improvements.
 
 ## Deployment
 
@@ -279,6 +319,8 @@ Source repository:
 - [`docs/HANDOVER_SYSTEM.md`](docs/HANDOVER_SYSTEM.md) — system architecture
 - [`docs/HANDOVER_RUNTIME.md`](docs/HANDOVER_RUNTIME.md) — setup and operations
 - [`docs/HANDOVER_FRONTEND.md`](docs/HANDOVER_FRONTEND.md) — UI and interaction details
+- [`docs/HANDOVER_R3.md`](docs/HANDOVER_R3.md) — Route, Reflect, Remember implementation
+- [`docs/HANDOVER_EVALUATION.md`](docs/HANDOVER_EVALUATION.md) — benchmark methodology and status
 - [`docs/SCREENSHOTS.md`](docs/SCREENSHOTS.md) — screenshot provenance
 
 ## Security

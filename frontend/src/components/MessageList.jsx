@@ -117,7 +117,7 @@ export default function MessageList() {
         <div className="h-full flex flex-col items-center justify-center gap-5 text-center px-6">
           <div className="w-full max-w-[620px] rounded-3xl border border-[var(--line)] bg-[var(--paper-strong)] px-7 py-9 shadow-[0_18px_50px_rgba(74,54,38,0.08)]">
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--accent-dark)]">
-            Cortex Research Studio
+            CortexAI · B.Tech Research Project
           </p>
           <div className="flex flex-col gap-1.5">
           <h1 className="research-display text-[34px] font-normal text-[var(--ink)] tracking-tight">
@@ -128,6 +128,32 @@ export default function MessageList() {
           </h3>
           <p className="text-[13px] text-[var(--muted)] max-w-[470px] mx-auto leading-relaxed">
             Build a research brief, presentation, questionnaire, or assignment from one focused workspace.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4 text-left">
+          {[
+            ["Route", "Match each request to the right specialist."],
+            ["Reflect", "Check answers against available evidence."],
+            ["Remember", "Retain only verified research context."],
+          ].map(([title, description]) => (
+            <div key={title} className="rounded-2xl border border-[var(--line)] bg-[#faf6ef] px-3 py-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--accent-dark)]">{title}</p>
+              <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">{description}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 rounded-2xl border border-[#e6b9aa] bg-[#f7ebe4] px-4 py-3 text-left">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--accent-dark)]">
+              Evaluation status
+            </p>
+            <span className="rounded-full bg-[var(--paper-strong)] px-2 py-1 text-[10px] font-medium text-[var(--muted)]">
+              Baseline ready
+            </span>
+          </div>
+          <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
+            The project records routing, evidence, latency, and estimated model
+            usage for reproducible cost and quality evaluation.
           </p>
         </div>
         <div className="flex flex-wrap justify-center gap-2 mt-1 max-w-[620px]">
@@ -167,6 +193,7 @@ export default function MessageList() {
                 content={msg.content}
                 images={msg?.images || []}
                 files={msg?.files || []}
+                trace={msg?.trace}
               />
             </motion.div>
           ))}

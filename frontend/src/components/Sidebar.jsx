@@ -201,7 +201,7 @@ export default function Sidebar() {
         </button>
 
         <span className="text-[16px] font-semibold text-[var(--ink)] tracking-tight flex-1">
-          Cortex Research
+          CortexAI Research
         </span>
 
         <span className="text-[10px] font-medium text-[var(--accent-dark)] bg-[#f3ddd4] border border-[#e6b9aa] px-2 py-0.5 rounded-full tracking-wide">
