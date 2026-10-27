@@ -132,15 +132,22 @@ export default function MessageList() {
         </div>
         <div className="flex flex-wrap justify-center gap-2 mt-1 max-w-[620px]">
           {[
-            "Summarize my uploaded chapter",
-            "Create a presentation outline",
-            "Generate a study questionnaire",
-          ].map((s) => (
+            ["Summarize my uploaded chapter", "chat"],
+            ["Create a presentation outline", "ppt"],
+            ["Generate a study questionnaire", "chat"],
+          ].map(([label, agent]) => (
             <button
-              key={s}
+              key={label}
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("cortex:prompt", {
+                    detail: { prompt: label, agent },
+                  }),
+                )
+              }
               className="text-[12px] text-[var(--muted)] bg-[var(--paper-strong)] border border-[var(--line)] px-3.5 py-2 rounded-full hover:border-[#d59b8c] hover:text-[var(--accent-dark)] transition-colors duration-150 cursor-pointer"
             >
-              {s}
+              {label}
             </button>
           ))}
         </div>
@@ -160,7 +167,6 @@ export default function MessageList() {
                 content={msg.content}
                 images={msg?.images || []}
                 files={msg?.files || []}
-                trace={msg?.trace}
               />
             </motion.div>
           ))}

@@ -125,6 +125,15 @@ export default function ChatInput({ setBanner }) {
   ];
 
   useEffect(() => {
+    const handlePresetPrompt = (event) => {
+      setValue(event.detail?.prompt || "");
+      if (event.detail?.agent) setSelectedAgent(event.detail.agent);
+    };
+    window.addEventListener("cortex:prompt", handlePresetPrompt);
+    return () => window.removeEventListener("cortex:prompt", handlePresetPrompt);
+  }, []);
+
+  useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
 

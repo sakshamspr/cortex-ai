@@ -6,7 +6,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Copy, Check } from "lucide-react";
 
-function MessageBubble({ role, content, images, files = [], trace }) {
+function MessageBubble({ role, content, images = [], files = [] }) {
   const isUser = role === "user";
   const [lightboxSrc, setLightboxSrc] = useState(null);
   const [copiedCode, setCopiedCode] = useState("");
@@ -80,24 +80,6 @@ function MessageBubble({ role, content, images, files = [], trace }) {
               />
             ))}
           </div>
-        )}
-        {!isUser && trace && (
-          <details className="mb-3 rounded-xl border border-[var(--line)] bg-[#f7efe7] px-3 py-2 text-xs text-[var(--muted)]">
-            <summary className="cursor-pointer font-semibold text-[var(--ink)]">
-              Research trace
-            </summary>
-            <div className="mt-2 grid grid-cols-2 gap-2">
-              <span>Agent: {trace.routing?.chosen?.agent || "chat"}</span>
-              <span>Tier: {trace.routing?.chosen?.tier || "economy"}</span>
-              <span>Latency: {Math.round(trace.execution?.latencyMs || 0)} ms</span>
-              <span>Cost: ${(trace.execution?.costUsd || 0).toFixed(5)}</span>
-              {trace.verification && (
-                <span className="col-span-2">
-                  Verified confidence: {Math.round(trace.verification.faithfulness * 100)}%
-                </span>
-              )}
-            </div>
-          </details>
         )}
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}

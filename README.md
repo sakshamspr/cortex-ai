@@ -1,81 +1,96 @@
 # CortexAI Research Studio
 
-**CortexAI** is a multi-agent research workspace for turning source material
-into grounded answers and presentable academic outputs.
+CortexAI is a polished, source-aware workspace for learning, research, and
+creative production. It helps users move from a question or uploaded chapter
+to a clear answer, a structured study resource, or a finished presentation.
 
 > **Turn sources into insight.**
 
-Upload a chapter or PDF, explore its evidence, ask questions, search for
-supporting sources, and create research briefs, presentations, questionnaires,
-assignments, PDFs, and other artifacts from one workspace.
+## What users can do
 
-## What is new
+- Chat naturally with an intelligent assistant.
+- Upload a PDF or chapter and ask questions about its contents.
+- Search the live web for current supporting information.
+- Generate research briefs and topic summaries.
+- Create presentation-ready slide decks.
+- Generate questionnaires, answer keys, and assignments.
+- Produce professional PDF documents.
+- Generate and inspect code with a live artifact preview.
+- Analyze images and create visual assets.
+- Keep separate conversations organized in a workspace sidebar.
 
-### Research Studio interface
+## A complete research workflow
 
-- Warm editorial visual system with paper/ivory surfaces, charcoal typography,
-  terracotta accents, sage support tones, and responsive layouts.
-- Research-focused empty state instead of a generic blank chatbot.
+```text
+Question or source
+        ↓
+Explore and understand
+        ↓
+Ask focused questions
+        ↓
+Create a brief, quiz, assignment, PDF, or presentation
+        ↓
+Review and download the result
+```
+
+The interface is designed for demonstrations and real coursework: it starts
+with a clear research workspace, provides guided actions, accepts source
+material, and keeps generated artifacts close to the conversation that
+created them.
+
+## Research Studio experience
+
+- Warm editorial visual language with paper surfaces, charcoal typography,
+  terracotta accents, and restrained borders.
+- Responsive desktop and mobile layouts.
 - Guided actions for research briefs, presentations, questionnaires, and
   assignments.
+- Source attachment state shown directly in the composer.
+- Markdown answers with tables, links, images, and syntax-highlighted code.
 - Artifact panel for generated files and previews.
-- Responsive desktop and mobile layouts.
+- Conversation rename, delete, and workspace organization.
+- Clear loading, upload, empty, and error states.
 
-### Cost-aware routing
+## Specialist capabilities
 
-Common prompts are classified locally before the specialist agent runs. This
-avoids spending an additional model call only to classify routine requests.
+### Conversation
 
-The router recognizes conversation, web search, coding, PPT, PDF, image,
-vision, and PDF-RAG workflows. Explicit agent selection and uploaded-file
-routing take priority.
+Handles explanations, brainstorming, study help, summaries, and everyday
+questions while preserving the active conversation context.
 
-### R3 research loop
+### Document workspace
 
-CortexAI now includes a feature-gated **Route, Reflect, Remember** layer:
+Uploaded PDFs are extracted, divided into meaningful passages, searched for
+relevant context, and used to answer questions about the source. The document
+workflow is designed to keep source-based answers focused on the uploaded
+material.
 
-1. **Route** selects an appropriate agent and model tier.
-2. **Reflect** evaluates answer claims against available evidence.
-3. **Remember** stores only turns that pass the verification threshold.
+### Web research
 
-The same faithfulness score is reused as:
+The search workflow retrieves current web information and turns the results
+into a readable answer rather than returning a raw search dump.
 
-- the answer gate;
-- the routing reward;
-- the memory write filter.
+### Coding studio
 
-All R3 features default to off for backward compatibility.
+The coding assistant can generate, explain, review, debug, and improve code.
+Generated files can be opened in the artifact area for inspection and preview.
 
-### Traceability and observability
+### Presentation builder
 
-When enabled, each turn can record:
+The presentation workflow creates downloadable PowerPoint decks from a topic,
+prompt, or source-based request.
 
-- selected agent and tier;
-- routing mode and policy version;
-- estimated input/output tokens;
-- estimated cost and latency;
-- claim-level verification;
-- faithfulness score;
-- accept/escalate/abstain decision;
-- memory retrieval and write status;
-- routing reward.
+### Document builder
 
-Assistant messages expose a collapsible **Research trace** panel with the most
-important metadata.
+The PDF workflow creates a professional downloadable document from a prompt or
+research topic.
 
-### Document-to-output workflow
+### Image and vision tools
 
-The PDF-RAG workflow extracts and chunks uploaded documents, retrieves relevant
-passages with Qdrant, and generates a response constrained to the uploaded
-source. Existing generation agents can produce:
+The image workflow creates visual assets. The vision workflow analyzes
+uploaded images, including visible text, charts, and tables.
 
-- PowerPoint presentations;
-- PDF documents;
-- coding artifacts;
-- images;
-- research summaries and study material.
-
-## Product architecture
+## Architecture
 
 ```text
 React + Vite Research Studio
@@ -86,7 +101,7 @@ React + Vite Research Studio
     ┌─────────┼─────────┬─────────┐
     ▼         ▼         ▼         ▼
   Chat      Agent     Billing   Redis
- Service   Service    Service   Memory
+ Service   Service    Service   Workspace memory
               │
               ▼
         LangGraph Supervisor
@@ -104,67 +119,64 @@ PPT        PDF           Image           Vision
 
 | Service | Port | Responsibility |
 |---|---:|---|
-| Gateway | 8000 | CORS, security middleware, anonymous local identity, proxying |
+| Gateway | 8000 | Public API entry point and service proxy |
 | Chat | 8002 | Conversations and message persistence |
-| Agent | 8003 | Routing, model calls, RAG, verification, artifacts |
-| Billing | 8004 | Razorpay order and payment flows |
+| Agent | 8003 | Intelligent workflows, document processing, and artifacts |
+| Billing | 8004 | Optional payment flows |
 | Frontend | 5173 | Vite development server |
 
-Authentication is intentionally disabled in the local demo runtime. The
-gateway supplies an anonymous local identity. This is not production
-authentication.
+The local demo uses an anonymous workspace identity. It is intended for a
+controlled local presentation, not an unrestricted public deployment.
 
-## Technology stack
+## Technology
 
 | Layer | Technologies |
 |---|---|
 | Frontend | React, Vite, Tailwind CSS, Redux Toolkit, Framer Motion |
 | Backend | Node.js, Express, microservices |
-| Orchestration | LangChain, LangGraph |
-| Data | MongoDB, Redis, Qdrant |
-| Models/providers | Groq, Google Gemini, OpenRouter, Tavily |
+| Orchestration | LangChain and LangGraph |
+| Persistence | MongoDB and Redis |
+| Document retrieval | Qdrant and PDF parsing |
+| AI providers | Groq, Google Gemini, OpenRouter, Tavily |
 | Artifacts | PDFKit, PPTXGenJS, S3-compatible storage |
-| Contracts | Zod runtime validation |
 
-## Repository structure
+## Screenshots
+
+### Desktop Research Studio
+
+![CortexAI Research Studio desktop](screenshots/fresh/research-studio-desktop.png)
+
+### Mobile Research Studio
+
+![CortexAI Research Studio mobile](screenshots/fresh/research-studio-mobile.png)
+
+These are fresh captures from the current frontend build. The screenshot
+inventory and capture procedure are documented in
+[`docs/SCREENSHOTS.md`](docs/SCREENSHOTS.md).
+
+## Project structure
 
 ```text
 frontend/                 React/Vite application
 backend/gateway/          API gateway
 backend/services/chat/    Conversation persistence
-backend/services/agent/   LangGraph agents and R3 runtime
-backend/services/billing/ Payment flows
+backend/services/agent/   Intelligent workflows and agents
+backend/services/billing/ Optional payment service
 backend/shared/           Shared backend utilities
-docs/                     Architecture, handover, research documentation
-eval/                     Evaluation smoke harness
-screenshots/fresh/        Current UI screenshots
+docs/                     Technical handover and project documentation
+screenshots/fresh/        Current interface screenshots
 ```
-
-## Screenshots
-
-### Current Research Studio — desktop
-
-![Research Studio desktop](screenshots/fresh/research-studio-desktop.png)
-
-### Current Research Studio — mobile
-
-![Research Studio mobile](screenshots/fresh/research-studio-mobile.png)
-
-These screenshots were captured from the current local build and show the
-present visual direction without exposing private conversations, documents, or
-credentials. Capture details are documented in
-[`docs/SCREENSHOTS.md`](docs/SCREENSHOTS.md).
 
 ## Run locally
 
-### Prerequisites
+### Requirements
 
-- Node.js 18+
+- Node.js 18 or newer
 - MongoDB
 - Redis
-- Qdrant for PDF-RAG
-- Model-provider credentials
-- S3-compatible storage for generated artifacts
+- Qdrant for document questions
+- Provider credentials for the workflows you want to use
+- S3-compatible storage for downloadable artifacts
 
 ### Install
 
@@ -178,16 +190,13 @@ npm install
 
 ### Configure
 
-Copy the templates:
-
 ```bash
 cp .env.example .env
 cp frontend/.env.example frontend/.env
 ```
 
-Fill provider and database values locally. Never commit `.env` files.
-
-Backend values include:
+Fill the ignored local files with your own values. Important backend settings
+include:
 
 ```env
 FRONTEND_URL=http://localhost:5173
@@ -208,12 +217,15 @@ AWS_REGION=...
 AWS_BUCKET_NAME=...
 ```
 
-Frontend values:
+Frontend:
 
 ```env
 VITE_SERVER_URL=http://localhost:8000
 VITE_RAZORPAY_KEY=...
 ```
+
+Never commit environment files, credentials, private documents, or runtime
+conversation data.
 
 ### Start
 
@@ -233,77 +245,44 @@ npm run dev
 
 Open `http://localhost:5173`.
 
-## R3 configuration
-
-```env
-R3_ROUTER=off
-R3_VERIFIER=off
-R3_MEMORY=off
-```
-
-Recommended demonstration order:
-
-1. Start with all flags off.
-2. Use `R3_ROUTER=shadow` to observe policy decisions safely.
-3. Enable `R3_VERIFIER=on` to expose claim and gate metadata.
-4. Enable `R3_MEMORY=on` after confirming Redis connectivity.
-5. Use `R3_ROUTER=live` only after reviewing traces.
-
-Traces are written to `traces/turns.jsonl` and policy state to
-`traces/policy.json` when the corresponding features are used.
-
-## Validation
+## Verification
 
 ```bash
 npm --prefix backend/services/agent run test:r3
-npm --prefix backend/services/agent run eval:r3
 npm --prefix frontend run build
 git diff --check
 ```
 
-Current verified checks:
-
-- 5 R3 unit tests pass;
-- frontend production build passes;
-- supervisor graph compiles;
-- backend syntax checks pass;
-- zero-cost evaluation smoke harness passes.
-
-The repository does not yet contain a labelled benchmark dataset or real
-trace corpus. Routing accuracy, quality, latency, cost savings, and ablation
-results are therefore **TBD (run eval)** and must not be presented as
-measured results.
+The current implementation has passing automated checks and a successful
+production frontend build. Additional technical evaluation material remains
+available in the private project handover under `docs/`.
 
 ## Deployment
 
-The frontend is compatible with Vercel:
+The frontend can be deployed to Vercel:
 
 ```bash
 vercel login
 vercel --cwd frontend --prod
 ```
 
-Configure `VITE_SERVER_URL` in Vercel to a deployed backend gateway. Vercel
-hosts the frontend only; the Node services, MongoDB, Redis, Qdrant, and object
-storage must be hosted separately.
+Set `VITE_SERVER_URL` in the Vercel project to the URL of a separately hosted
+gateway. Vercel hosts the frontend; the Node services, MongoDB, Redis, Qdrant,
+and artifact storage must be hosted separately.
 
-The maintained source repository is
-[github.com/sakshamspr/cortex-ai](https://github.com/sakshamspr/cortex-ai).
+Source repository:
+[github.com/sakshamspr/cortex-ai](https://github.com/sakshamspr/cortex-ai)
 
 ## Documentation
 
 - [`docs/HANDOVER_INDEX.md`](docs/HANDOVER_INDEX.md) — complete technical handover
-- [`docs/HANDOVER_SYSTEM.md`](docs/HANDOVER_SYSTEM.md) — architecture and services
+- [`docs/HANDOVER_SYSTEM.md`](docs/HANDOVER_SYSTEM.md) — system architecture
 - [`docs/HANDOVER_RUNTIME.md`](docs/HANDOVER_RUNTIME.md) — setup and operations
-- [`docs/HANDOVER_R3.md`](docs/HANDOVER_R3.md) — R3 implementation
-- [`docs/HANDOVER_FRONTEND.md`](docs/HANDOVER_FRONTEND.md) — frontend behavior
-- [`docs/HANDOVER_EVALUATION.md`](docs/HANDOVER_EVALUATION.md) — benchmark status
-- [`docs/HANDOVER_SECURITY.md`](docs/HANDOVER_SECURITY.md) — security checklist
+- [`docs/HANDOVER_FRONTEND.md`](docs/HANDOVER_FRONTEND.md) — UI and interaction details
 - [`docs/SCREENSHOTS.md`](docs/SCREENSHOTS.md) — screenshot provenance
 
 ## Security
 
-Never commit credentials, local environment files, private documents, or raw
-traces. Development credentials previously used for this project should be
-rotated before any public deployment. See
-[`docs/HANDOVER_SECURITY.md`](docs/HANDOVER_SECURITY.md).
+Use fresh credentials for every deployment. Rotate any credentials that were
+used during development, keep local environment files ignored, and do not
+upload private documents or raw workspace data to the repository.

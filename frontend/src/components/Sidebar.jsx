@@ -10,7 +10,6 @@ import {
   X,
   Coins,
   ConeIcon,
-  CoinsIcon,
   Trash2,
   Edit3,
 } from "lucide-react";
@@ -30,7 +29,6 @@ import {
 } from "../redux/conversation.slice";
 import { getMessages } from "../features/message.api";
 import { setArtifacts, setMessages } from "../redux/message.slice";
-import BillingDrawer from "./BillingDrawer";
 
 const PanelIcon = () => (
   <svg
@@ -58,7 +56,6 @@ export default function Sidebar() {
     (state) => state.conversation,
   );
   const dispatch = useDispatch();
-  const [showBilling, setShowBilling] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [editTitleValue, setEditTitleValue] = useState("");
 
@@ -351,12 +348,6 @@ export default function Sidebar() {
             </div>
             <div className="flex gap-1">
               <button
-                onClick={() => setShowBilling(true)}
-                className="flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-[var(--accent)] cursor-pointer hover:bg-[#f3e7dd] hover:text-[var(--ink)] transition-all duration-150"
-              >
-                <CoinsIcon size={16} />
-              </button>
-              <button
                 onClick={logout}
                 className="flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-[var(--muted)] cursor-pointer hover:bg-[#f3e7dd] hover:text-[var(--ink)] transition-all duration-150"
               >
@@ -408,7 +399,6 @@ export default function Sidebar() {
         {sidebarContent}
       </div>
 
-      <BillingDrawer open={showBilling} onClose={() => setShowBilling(false)} />
     </>
   );
 }
