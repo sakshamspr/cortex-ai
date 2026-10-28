@@ -10,6 +10,19 @@ const port = process.env.PORT;
 
 app.use("/", router);
 
+app.get("/health", (req, res) => {
+  res.json({ service: "chat", status: "ok" });
+});
+
+app.use((err, req, res, next) => {
+  console.error("[chat]", err);
+  if (res.headersSent) return next(err);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Chat service request failed.",
+  });
+});
+
 app.listen(port, () => {
   connectDB();
   console.log(`chat service running on ${port}`);

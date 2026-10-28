@@ -41,6 +41,12 @@ import Message from "../models/message.model.js";
 export const saveMessage = async (req, res) => {
   try {
     const { conversationId, role, content, images, artifacts, trace } = req.body;
+    if (!conversationId || !role || typeof content !== "string") {
+      return res.status(400).json({
+        success: false,
+        message: "conversationId, role, and content are required.",
+      });
+    }
 
     const message = await Message.create({
       conversationId,

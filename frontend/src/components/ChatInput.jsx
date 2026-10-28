@@ -258,12 +258,15 @@ export default function ChatInput({ setBanner }) {
         dispatch(setArtifacts(data.artifacts));
       }
     } catch (error) {
+      const responseData = error.response?.data;
       setBanner({
         open: true,
-
-        title: error.response?.data?.title || "Something went wrong",
-
-        message: error.response?.data?.message || "Please try again.",
+        title: responseData?.title || "Request could not be completed",
+        message:
+          responseData?.message ||
+          responseData?.error ||
+          error.message ||
+          "Please check that the services are running and try again.",
       });
     } finally {
       dispatch(setIsLoading(false));

@@ -9,6 +9,10 @@ const port = process.env.PORT;
 
 app.use("/", router);
 
+app.get("/health", (req, res) => {
+  res.json({ service: "agent", status: "ok" });
+});
+
 app.use((err, req, res, next) => {
   console.error(err);
 

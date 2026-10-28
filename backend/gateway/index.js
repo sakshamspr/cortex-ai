@@ -42,11 +42,29 @@ app.use("/api/chat", proxyWithUser(process.env.CHAT_SERVICE));
 app.use("/api/agent", proxyWithUser(process.env.AGENT_SERVICE));
 app.use("/api/billing", proxyWithUser(process.env.BILLING_SERVICE));
 
+app.use((err, req, res, next) => {
+  console.error("[gateway]", err);
+  if (res.headersSent) return next(err);
+  return res.status(err.status || 502).json({
+    success: false,
+    title: "Service unavailable",
+    message:
+      err.data?.message ||
+      err.response?.body?.message ||
+      err.message ||
+      "The requested service could not complete this request.",
+  });
+});
+
 app.get("/", (req, res) => {
   res.status(200).json({
     service: "gateway",
     status: "ok",
   });
+});
+
+app.get("/health", (req, res) => {
+  res.json({ service: "gateway", status: "ok" });
 });
 
 app.listen(port, () => {

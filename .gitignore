@@ -9,6 +9,7 @@ web_modules/
 .env.development.local
 .env.test.local
 .env.production.local
+backend/services/agent/traces/*.jsonl
 
 # Secrets and credentials
 serviceAccount.json

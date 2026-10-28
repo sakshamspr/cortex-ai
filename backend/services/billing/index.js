@@ -24,6 +24,10 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/health", (req, res) => {
+  res.json({ service: "billing", status: "ok" });
+});
+
 app.listen(port, () => {
   connectDB();
   console.log(`billing service running on ${port}`);
